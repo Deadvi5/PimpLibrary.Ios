@@ -1,10 +1,3 @@
-//
-//  BookListView.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 04/06/24.
-//
-
 import SwiftUI
 
 struct BookListView: View {
@@ -13,16 +6,35 @@ struct BookListView: View {
     @State private var bookToDelete: Book?
     @State private var searchText = ""
     @State private var isSearchBarVisible = false
+    @State private var isSortingVisible = false
+    @State private var sortCriteria = "Title"
+    @State private var isAscending = true
+    @State private var isLoading = false
 
     init(viewModel: LibraryViewModel = LibraryViewModel(bookRepository: RealmBookRepository())) {
         self.viewModel = viewModel
     }
 
+    var sortedBooks: [Book] {
+        let sortedBooks: [Book]
+        switch sortCriteria {
+        case "Title":
+            sortedBooks = viewModel.books.sorted { isAscending ? $0.title < $1.title : $0.title > $1.title }
+        case "Author":
+            sortedBooks = viewModel.books.sorted { isAscending ? $0.author < $1.author : $0.author > $1.author }
+        case "Year":
+            sortedBooks = viewModel.books.sorted { isAscending ? $0.year < $1.year : $0.year > $1.year }
+        default:
+            sortedBooks = viewModel.books
+        }
+        return sortedBooks
+    }
+
     var filteredBooks: [Book] {
         if searchText.isEmpty {
-            return viewModel.books
+            return sortedBooks
         } else {
-            return viewModel.books.filter { $0.title.lowercased().contains(searchText.lowercased()) }
+            return sortedBooks.filter { $0.title.lowercased().contains(searchText.lowercased()) }
         }
     }
 
@@ -33,6 +45,15 @@ struct BookListView: View {
                     .font(.largeTitle)
                     .bold()
                 Spacer()
+                Button(action: {
+                    withAnimation {
+                        isSortingVisible.toggle()
+                    }
+                }) {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .imageScale(.large)
+                }
+                .padding(.trailing, 10)
                 Button(action: {
                     withAnimation {
                         isSearchBarVisible.toggle()
@@ -53,6 +74,31 @@ struct BookListView: View {
             if isSearchBarVisible {
                 SearchBarView(text: $searchText)
                     .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
+            if isSortingVisible {
+                HStack {
+                    Picker("Sort by", selection: $sortCriteria) {
+                        Text("Title").tag("Title")
+                        Text("Author").tag("Author")
+                        Text("Year").tag("Year")
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
+                    .padding(.horizontal)
+
+                    Toggle(isOn: $isAscending) {
+                        Text(isAscending ? "Ascending" : "Descending")
+                    }
+                    .padding(.horizontal)
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
+            if isLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .scaleEffect(1.5, anchor: .center)
+                    .padding()
             }
 
             List {
@@ -92,6 +138,9 @@ struct BookListView: View {
                 .onDelete(perform: confirmDelete)
             }
             .listStyle(InsetGroupedListStyle())
+            .refreshable {
+                refreshBooks()
+            }
             .alert(isPresented: $showingAlert) {
                 Alert(
                     title: Text("Delete Book"),
@@ -106,6 +155,17 @@ struct BookListView: View {
             }
         }
         .navigationBarHidden(true)
+    }
+
+    func refreshBooks() {
+        isLoading = true
+        DispatchQueue.global().async {
+            let books = viewModel.bookRepository.fetchBooks()
+            DispatchQueue.main.async {
+                viewModel.books = books
+                isLoading = false
+            }
+        }
     }
 
     func confirmDelete(at offsets: IndexSet) {

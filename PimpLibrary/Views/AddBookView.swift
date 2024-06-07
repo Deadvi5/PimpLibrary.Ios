@@ -56,7 +56,7 @@ struct AddBookView: View {
                     Button(action: {
                         showingISBNInput = true
                     }) {
-                        Text("Input ISBN")
+                        Text("Isbn")
                             .font(.headline)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)

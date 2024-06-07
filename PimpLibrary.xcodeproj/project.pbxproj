@@ -17,6 +17,7 @@
 		AB6186862C133BE70001E944 /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6186852C133BE70001E944 /* BarcodeScannerView.swift */; };
 		AB6186882C134E740001E944 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6186872C134E740001E944 /* StartView.swift */; };
 		AB61868A2C134E930001E944 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6186892C134E930001E944 /* SettingsView.swift */; };
+		AB61868C2C13615E0001E944 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB61868B2C13615E0001E944 /* SettingsViewModel.swift */; };
 		AB6F51082C0F4BFE003E8231 /* PimpLibraryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6F51072C0F4BFE003E8231 /* PimpLibraryApp.swift */; };
 		AB6F510E2C0F4C00003E8231 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB6F510D2C0F4C00003E8231 /* Assets.xcassets */; };
 		AB6F51112C0F4C00003E8231 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB6F51102C0F4C00003E8231 /* Preview Assets.xcassets */; };
@@ -66,6 +67,7 @@
 		AB6186852C133BE70001E944 /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		AB6186872C134E740001E944 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		AB6186892C134E930001E944 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		AB61868B2C13615E0001E944 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		AB6F51042C0F4BFE003E8231 /* PimpLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PimpLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB6F51072C0F4BFE003E8231 /* PimpLibraryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PimpLibraryApp.swift; sourceTree = "<group>"; };
 		AB6F510D2C0F4C00003E8231 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 			isa = PBXGroup;
 			children = (
 				AB6F51352C0F4C94003E8231 /* LibraryViewModel.swift */,
+				AB61868B2C13615E0001E944 /* SettingsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -396,6 +399,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB6186862C133BE70001E944 /* BarcodeScannerView.swift in Sources */,
+				AB61868C2C13615E0001E944 /* SettingsViewModel.swift in Sources */,
 				AB9160BF2C11EF09005F6AC4 /* UrlUtilities.swift in Sources */,
 				AB9160C12C11EF80005F6AC4 /* GoogleBookApi.swift in Sources */,
 				AB6F51342C0F4C4D003E8231 /* Book.swift in Sources */,

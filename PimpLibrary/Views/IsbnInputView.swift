@@ -9,33 +9,32 @@ struct IsbnInputView: View {
     var isbnService: IsbnService
 
     var body: some View {
-        NavigationView {
             VStack {
-                Spacer().frame(height: 40)
-                
                 Text("Enter ISBN to Search for a Book")
                     .font(.title2)
                     .fontWeight(.semibold)
                     .multilineTextAlignment(.center)
-                    .padding(.bottom, 20)
+                    .padding(.top, 40)
                 
-                HStack {
+                HStack(spacing: 10) {
                     TextField("ISBN", text: $isbn)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
-                        .keyboardType(.numberPad)
-                        .background(Color(.systemGray6))
+                        .padding(5)
                         .cornerRadius(10)
-                        .padding(.horizontal)
+                        .keyboardType(.numberPad)
                     
                     Button(action: {
                         showingBarcodeScanner = true
                     }) {
                         Image(systemName: "camera")
                             .font(.title)
+                            .foregroundColor(.white)
                             .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
                     }
                 }
+                .padding(.horizontal)
 
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
@@ -55,14 +54,9 @@ struct IsbnInputView: View {
                         .padding(.horizontal)
                         .padding(.top, 20)
                 }
-
+                
                 Spacer()
-            }
             .padding()
-            .navigationBarTitle("Search Book by ISBN", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Cancel") {
-                presentationMode.wrappedValue.dismiss()
-            })
             .sheet(isPresented: $showingBarcodeScanner) {
                 BarcodeScannerView(isbn: $isbn)
             }

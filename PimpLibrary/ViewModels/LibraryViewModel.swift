@@ -10,7 +10,7 @@ import CoreData
 
 class LibraryViewModel: ObservableObject {
     @Published var books: [Book]
-    private var bookRepository: BookRepository
+    var bookRepository: BookRepository
     
     init(bookRepository: BookRepository) {
             self.bookRepository = bookRepository

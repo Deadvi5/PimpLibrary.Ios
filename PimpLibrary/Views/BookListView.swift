@@ -103,9 +103,19 @@ struct BookListView: View {
             }
 
             if useGridView {
-                BookGridItems(filteredBooks: filteredBooks, viewModel: viewModel, refreshBooks: refreshBooks, confirmDelete: confirmDelete)
+                BookGridItems(
+                    filteredBooks: filteredBooks,
+                    viewModel: viewModel,
+                    refreshBooks: refreshBooks,
+                    confirmDelete: confirmDelete(at:)
+                )
             } else {
-                BookListItems(filteredBooks: filteredBooks, viewModel: viewModel, refreshBooks: refreshBooks, confirmDelete: confirmDelete)
+                BookListItems(
+                    filteredBooks: filteredBooks,
+                    viewModel: viewModel,
+                    refreshBooks: refreshBooks,
+                    confirmDelete: confirmDelete(at:)
+                )
             }
         }
         .navigationBarHidden(true)
@@ -142,6 +152,11 @@ struct BookListView: View {
                 showingAlert = true
             }
         }
+    }
+    
+    func confirmDelete(at book: Book) {
+        bookToDelete = book
+        showingAlert = true
     }
 }
 

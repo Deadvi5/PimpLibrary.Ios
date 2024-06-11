@@ -6,9 +6,9 @@ struct SettingsView: View {
 
     var body: some View {
             Form {
-                Section(header: Text("Database Management").font(.headline)) {
+                Section(header: Text("Data").font(.headline)) {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Delete Realm Database")
+                        Text("Delete books")
                             .font(.headline)
                         
                         Text("This action will permanently delete all data stored in the Realm database. Please make sure to backup your data if needed before proceeding.")
@@ -18,7 +18,7 @@ struct SettingsView: View {
                         Button(action: {
                             showingAlert = true
                         }) {
-                            Text("Delete Database")
+                            Text("Delete Books")
                                 .font(.headline)
                                 .foregroundColor(.white)
                                 .padding()
@@ -28,8 +28,8 @@ struct SettingsView: View {
                         }
                         .alert(isPresented: $showingAlert) {
                             Alert(
-                                title: Text("Delete Realm Database"),
-                                message: Text("Are you sure you want to delete the Realm database? This action cannot be undone."),
+                                title: Text("Delete books"),
+                                message: Text("Are you sure you want to delete all your books? This action cannot be undone."),
                                 primaryButton: .destructive(Text("Delete")) {
                                     viewModel.deleteRealmFile()
                                 },

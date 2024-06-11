@@ -39,8 +39,17 @@ struct SettingsView: View {
                     }
                     .padding(.vertical, 5)
                 }
+                
+                Section(header: Text("View Options").font(.headline)) {
+                    Toggle(isOn: $viewModel.useGridView) {
+                        Text("Use Grid View")
+                    }
+                    .onChange(of: viewModel.useGridView) {
+                        viewModel.toggleUseGridView()
+                    }
+                }
             }
-        }
+    }
 }
 
 struct SettingsView_Previews: PreviewProvider {

@@ -9,6 +9,13 @@ import SwiftUI
 import RealmSwift
 
 class SettingsViewModel: ObservableObject {
+    @Published var useGridView: Bool = UserDefaults.standard.bool(forKey: "useGridView")
+
+    func toggleUseGridView() {
+        useGridView.toggle()
+        UserDefaults.standard.set(useGridView, forKey: "useGridView")
+    }
+
     func deleteRealmFile() {
         if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
             let realmURLs = [

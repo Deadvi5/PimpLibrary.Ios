@@ -10,6 +10,7 @@ struct BookListView: View {
     @State private var sortCriteria = "Title"
     @State private var isAscending = true
     @State private var isLoading = false
+    @AppStorage("useGridView") private var useGridView: Bool = false
 
     init(viewModel: LibraryViewModel = LibraryViewModel(bookRepository: RealmBookRepository())) {
         self.viewModel = viewModel
@@ -101,60 +102,25 @@ struct BookListView: View {
                     .padding()
             }
 
-            List {
-                ForEach(filteredBooks) { book in
-                    NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
-                        HStack {
-                            if !book.coverImageUrl.isEmpty {
-                                if let url = URL(string: book.coverImageUrl) {
-                                    AsyncImage(url: url)
-                                        .frame(width: 50, height: 75)
-                                        .cornerRadius(5)
-                                        .aspectRatio(contentMode: .fit)
-                                }
-                            } else {
-                                Rectangle()
-                                    .fill(Color.gray)
-                                    .frame(width: 50, height: 75)
-                                    .cornerRadius(5)
-                            }
-                            VStack(alignment: .leading) {
-                                Text(book.title)
-                                    .font(.headline)
-                                Text(book.author)
-                                    .font(.subheadline)
-                                Text(book.genre)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                Text(book.year)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                            .padding(.leading, 8)
-                        }
-                        .padding(.vertical, 8)
-                    }
-                }
-                .onDelete(perform: confirmDelete)
-            }
-            .listStyle(InsetGroupedListStyle())
-            .refreshable {
-                refreshBooks()
-            }
-            .alert(isPresented: $showingAlert) {
-                Alert(
-                    title: Text("Delete Book"),
-                    message: Text("Are you sure you want to delete \(bookToDelete?.title ?? "")?"),
-                    primaryButton: .destructive(Text("Delete")) {
-                        if let book = bookToDelete {
-                            viewModel.removeBook(book: book)
-                        }
-                    },
-                    secondaryButton: .cancel()
-                )
+            if useGridView {
+                BookGridItems(filteredBooks: filteredBooks, viewModel: viewModel, refreshBooks: refreshBooks, confirmDelete: confirmDelete)
+            } else {
+                BookListItems(filteredBooks: filteredBooks, viewModel: viewModel, refreshBooks: refreshBooks, confirmDelete: confirmDelete)
             }
         }
         .navigationBarHidden(true)
+        .alert(isPresented: $showingAlert) {
+            Alert(
+                title: Text("Delete Book"),
+                message: Text("Are you sure you want to delete \(bookToDelete?.title ?? "")?"),
+                primaryButton: .destructive(Text("Delete")) {
+                    if let book = bookToDelete {
+                        viewModel.removeBook(book: book)
+                    }
+                },
+                secondaryButton: .cancel()
+            )
+        }
     }
 
     func refreshBooks() {
@@ -169,9 +135,12 @@ struct BookListView: View {
     }
 
     func confirmDelete(at offsets: IndexSet) {
-        if let index = offsets.first {
-            bookToDelete = viewModel.books[index]
-            showingAlert = true
+        for index in offsets {
+            let book = filteredBooks[index]
+            if let bookIndex = viewModel.books.firstIndex(where: { $0.id == book.id }) {
+                bookToDelete = viewModel.books[bookIndex]
+                showingAlert = true
+            }
         }
     }
 }

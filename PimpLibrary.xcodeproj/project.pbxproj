@@ -18,6 +18,8 @@
 		AB6186882C134E740001E944 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6186872C134E740001E944 /* StartView.swift */; };
 		AB61868A2C134E930001E944 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6186892C134E930001E944 /* SettingsView.swift */; };
 		AB61868C2C13615E0001E944 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB61868B2C13615E0001E944 /* SettingsViewModel.swift */; };
+		AB61868E2C1700250001E944 /* BookGridItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB61868D2C1700250001E944 /* BookGridItems.swift */; };
+		AB6186902C1702530001E944 /* BookListItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB61868F2C1702530001E944 /* BookListItems.swift */; };
 		AB6F51082C0F4BFE003E8231 /* PimpLibraryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6F51072C0F4BFE003E8231 /* PimpLibraryApp.swift */; };
 		AB6F510E2C0F4C00003E8231 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB6F510D2C0F4C00003E8231 /* Assets.xcassets */; };
 		AB6F51112C0F4C00003E8231 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB6F51102C0F4C00003E8231 /* Preview Assets.xcassets */; };
@@ -68,6 +70,8 @@
 		AB6186872C134E740001E944 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		AB6186892C134E930001E944 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		AB61868B2C13615E0001E944 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		AB61868D2C1700250001E944 /* BookGridItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookGridItems.swift; sourceTree = "<group>"; };
+		AB61868F2C1702530001E944 /* BookListItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookListItems.swift; sourceTree = "<group>"; };
 		AB6F51042C0F4BFE003E8231 /* PimpLibrary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PimpLibrary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB6F51072C0F4BFE003E8231 /* PimpLibraryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PimpLibraryApp.swift; sourceTree = "<group>"; };
 		AB6F510D2C0F4C00003E8231 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -241,6 +245,8 @@
 				AB6186852C133BE70001E944 /* BarcodeScannerView.swift */,
 				AB6186872C134E740001E944 /* StartView.swift */,
 				AB6186892C134E930001E944 /* SettingsView.swift */,
+				AB61868D2C1700250001E944 /* BookGridItems.swift */,
+				AB61868F2C1702530001E944 /* BookListItems.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -407,10 +413,12 @@
 				AB0592C02C12FA8800502CFE /* RealmBookRepository.swift in Sources */,
 				AB6186882C134E740001E944 /* StartView.swift in Sources */,
 				AB9160BD2C11EED7005F6AC4 /* ImageUtilities.swift in Sources */,
+				AB61868E2C1700250001E944 /* BookGridItems.swift in Sources */,
 				AB6F51382C0F4D90003E8231 /* BookListView.swift in Sources */,
 				AB6F513C2C0F4DCE003E8231 /* AddBookView.swift in Sources */,
 				AB0592BE2C12FA2000502CFE /* BookRepository.swift in Sources */,
 				AB0592C62C13016200502CFE /* IsbnService.swift in Sources */,
+				AB6186902C1702530001E944 /* BookListItems.swift in Sources */,
 				AB9160C62C11FD31005F6AC4 /* BookEntity.swift in Sources */,
 				AB6F51362C0F4C94003E8231 /* LibraryViewModel.swift in Sources */,
 				AB6186822C13085D0001E944 /* DetailFieldView.swift in Sources */,

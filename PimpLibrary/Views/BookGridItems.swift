@@ -10,7 +10,7 @@ struct BookGridItems: View {
     @State private var bookToDelete: Book?
     @State private var showingDeleteAlert = false
     @State private var shakeEffect = false
-    
+
     let columns = [
         GridItem(.flexible()),
         GridItem(.flexible()),
@@ -18,77 +18,68 @@ struct BookGridItems: View {
     ]
     
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(filteredBooks) { book in
-                    ZStack(alignment: .topLeading) {
-                        if isEditing {
-                            Button(action: {
-                                confirmDelete(book)
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(Color.gray)
-                                    .background(Color.white)
-                                    .clipShape(Circle())
+        NavigationView {
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 10) {
+                    ForEach(filteredBooks) { book in
+                        ZStack(alignment: .topLeading) {
+                            if isEditing {
+                                Button(action: {
+                                    confirmDelete(book)
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(Color.gray)
+                                        .background(Color.white)
+                                        .clipShape(Circle())
+                                }
+                                .offset(x: -5, y: -5)
+                                .zIndex(1)
                             }
-                            .offset(x: -5, y: -5)
-                            .zIndex(1)
-                        }
 
-                        VStack {
-                            if !book.coverImageUrl.isEmpty {
-                                if let url = URL(string: book.coverImageUrl) {
-                                    AsyncImage(url: url)
+                            NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
+                                VStack {
+                                    if !book.coverImageUrl.isEmpty {
+                                        if let url = URL(string: book.coverImageUrl) {
+                                            AsyncImage(url: url)
+                                                .frame(width: 120, height: 160)
+                                                .cornerRadius(5)
+                                                .aspectRatio(contentMode: .fit)
+                                                .rotationEffect(.degrees(shakeEffect ? -2 : 0))
+                                                .animation(shakeEffect ? Animation.linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: shakeEffect)
+                                        }
+                                    } else {
+                                        VStack {
+                                            Text(book.title)
+                                                .font(.headline)
+                                                .multilineTextAlignment(.center)
+                                            Text(book.author)
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                                .multilineTextAlignment(.center)
+                                        }
                                         .frame(width: 120, height: 160)
+                                        .background(Color.gray.opacity(0.3))
                                         .cornerRadius(5)
-                                        .aspectRatio(contentMode: .fit)
                                         .rotationEffect(.degrees(shakeEffect ? -2 : 0))
                                         .animation(shakeEffect ? Animation.linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: shakeEffect)
+                                    }
                                 }
-                            } else {
-                                VStack {
-                                    Text(book.title)
-                                        .font(.headline)
-                                        .multilineTextAlignment(.center)
-                                    Text(book.author)
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
+                                .contentShape(Rectangle())
+                                .onLongPressGesture {
+                                    withAnimation {
+                                        isEditing.toggle()
+                                        shakeEffect.toggle()
+                                    }
                                 }
-                                .frame(width: 120, height: 160)
-                                .background(Color.gray.opacity(0.3))
-                                .cornerRadius(5)
-                                .rotationEffect(.degrees(shakeEffect ? -2 : 0))
-                                .animation(shakeEffect ? Animation.linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: shakeEffect)
-                            }
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            if !isEditing {
-                                if let bookIndex = filteredBooks.firstIndex(where: { $0.id == book.id }) {
-                                    viewModel.books[bookIndex] = book
-                                }
-                            }
-                        }
-                        .onLongPressGesture {
-                            withAnimation {
-                                isEditing.toggle()
-                                shakeEffect.toggle()
                             }
                         }
                     }
-                    .background(
-                        NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
-                            EmptyView()
-                        }
-                        .opacity(0)
-                    )
                 }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
-        }
-        .refreshable {
-            refreshBooks()
+            .refreshable {
+                refreshBooks()
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ struct IsbnInputView: View {
     var isbnService: IsbnService
 
     var body: some View {
+        NavigationView {
             VStack {
                 Text("Enter ISBN to Search for a Book")
                     .font(.title2)
@@ -19,7 +20,8 @@ struct IsbnInputView: View {
                 HStack(spacing: 10) {
                     TextField("ISBN", text: $isbn)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(5)
+                        .padding(10)
+                        .background(Color(.systemGray6))
                         .cornerRadius(10)
                         .keyboardType(.numberPad)
                     
@@ -54,9 +56,14 @@ struct IsbnInputView: View {
                         .padding(.horizontal)
                         .padding(.top, 20)
                 }
-                
+
                 Spacer()
+            }
             .padding()
+            .navigationBarTitle("Search Book by ISBN", displayMode: .inline)
+            .navigationBarItems(trailing: Button("Cancel") {
+                presentationMode.wrappedValue.dismiss()
+            })
             .sheet(isPresented: $showingBarcodeScanner) {
                 BarcodeScannerView(isbn: $isbn)
             }

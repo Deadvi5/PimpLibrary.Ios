@@ -31,7 +31,6 @@
 		AB6F51382C0F4D90003E8231 /* BookListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6F51372C0F4D90003E8231 /* BookListView.swift */; };
 		AB6F513A2C0F4DB2003E8231 /* BookDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6F51392C0F4DB2003E8231 /* BookDetailView.swift */; };
 		AB6F513C2C0F4DCE003E8231 /* AddBookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6F513B2C0F4DCE003E8231 /* AddBookView.swift */; };
-		AB6F51422C0F5606003E8231 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6F51412C0F5606003E8231 /* CoreData.framework */; };
 		AB9160AF2C109E80005F6AC4 /* IsbnInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9160AE2C109E80005F6AC4 /* IsbnInputView.swift */; };
 		AB9160B72C11AE7D005F6AC4 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9160B62C11AE7D005F6AC4 /* AsyncImageView.swift */; };
 		AB9160BD2C11EED7005F6AC4 /* ImageUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9160BC2C11EED7005F6AC4 /* ImageUtilities.swift */; };
@@ -39,6 +38,7 @@
 		AB9160C12C11EF80005F6AC4 /* GoogleBookApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9160C02C11EF80005F6AC4 /* GoogleBookApi.swift */; };
 		AB9160C42C11F2CA005F6AC4 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AB9160C32C11F2CA005F6AC4 /* RealmSwift */; };
 		AB9160C62C11FD31005F6AC4 /* BookEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9160C52C11FD31005F6AC4 /* BookEntity.swift */; };
+		ABA807F42C18599000B816EB /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = AB9160C32C11F2CA005F6AC4 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +57,20 @@
 			remoteInfo = PimpLibrary;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		ABA807F52C18599000B816EB /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				ABA807F42C18599000B816EB /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AB0592BD2C12FA2000502CFE /* BookRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookRepository.swift; sourceTree = "<group>"; };
@@ -86,7 +100,6 @@
 		AB6F51372C0F4D90003E8231 /* BookListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookListView.swift; sourceTree = "<group>"; };
 		AB6F51392C0F4DB2003E8231 /* BookDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailView.swift; sourceTree = "<group>"; };
 		AB6F513B2C0F4DCE003E8231 /* AddBookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBookView.swift; sourceTree = "<group>"; };
-		AB6F51412C0F5606003E8231 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		AB9160AE2C109E80005F6AC4 /* IsbnInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsbnInputView.swift; sourceTree = "<group>"; };
 		AB9160B62C11AE7D005F6AC4 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
 		AB9160B82C11B43C005F6AC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -102,7 +115,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB9160C42C11F2CA005F6AC4 /* RealmSwift in Frameworks */,
-				AB6F51422C0F5606003E8231 /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,7 +266,6 @@
 		AB6F51402C0F5606003E8231 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				AB6F51412C0F5606003E8231 /* CoreData.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -278,6 +289,7 @@
 				AB6F51002C0F4BFE003E8231 /* Sources */,
 				AB6F51012C0F4BFE003E8231 /* Frameworks */,
 				AB6F51022C0F4BFE003E8231 /* Resources */,
+				ABA807F52C18599000B816EB /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -500,6 +512,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -563,6 +576,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;

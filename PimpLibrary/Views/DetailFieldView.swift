@@ -13,25 +13,22 @@ struct DetailFieldView: View {
     var isMultiline: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading) {
             Text(label)
                 .font(.headline)
             if isMultiline {
                 TextEditor(text: $text)
+                    .padding(8)
+                    .background(Color(UIColor.secondarySystemBackground))
+                    .cornerRadius(8)
+                    .foregroundColor(.primary)
                     .frame(height: 100)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                    )
             } else {
                 TextField(label, text: $text)
-                    .padding(10)
-                    .background(Color.white)
+                    .padding(8)
+                    .background(Color(UIColor.secondarySystemBackground))
                     .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                    )
+                    .foregroundColor(.primary)
             }
         }
     }

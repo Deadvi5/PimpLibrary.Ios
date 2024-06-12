@@ -5,9 +5,11 @@ import Vision
 struct BarcodeScannerView: UIViewControllerRepresentable {
     @Binding var isbn: String
     @Environment(\.presentationMode) var presentationMode
+    var onISBNScanned: ((String) -> Void)?
 
     class Coordinator: NSObject, AVCaptureMetadataOutputObjectsDelegate {
         var parent: BarcodeScannerView
+        var isCodeProcessed = false // Flag to prevent multiple calls
 
         init(parent: BarcodeScannerView) {
             self.parent = parent
@@ -23,7 +25,11 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         }
 
         func found(code: String) {
+            guard !isCodeProcessed else { return } // Prevent multiple processing
+            isCodeProcessed = true // Set the flag to true to prevent further processing
+
             parent.isbn = code
+            parent.onISBNScanned?(code)
             parent.presentationMode.wrappedValue.dismiss()
         }
     }

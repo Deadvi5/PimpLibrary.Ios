@@ -1,10 +1,3 @@
-//
-//  AddBookView.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 04/06/24.
-//
-
 import SwiftUI
 
 struct AddBookView: View {
@@ -17,10 +10,11 @@ struct AddBookView: View {
     @State private var coverImageUrl: String = ""
     
     @State private var showingISBNInput = false
+    @State private var showingBarcodeScanner = true // Directly show barcode scanner
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        ScrollView {
+        NavigationView {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     Button(action: {
@@ -54,9 +48,9 @@ struct AddBookView: View {
 
                 HStack(spacing: 16) {
                     Button(action: {
-                        showingISBNInput = true
+                        showingBarcodeScanner = true
                     }) {
-                        Text("Isbn")
+                        Text("Scan ISBN")
                             .font(.headline)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
@@ -83,18 +77,44 @@ struct AddBookView: View {
                 Spacer()
             }
             .padding(.vertical)
+            .background(Color(UIColor.systemGroupedBackground))
+            .navigationBarHidden(true)
+            .sheet(isPresented: $showingBarcodeScanner) {
+                BarcodeScannerView(isbn: .constant(""), onISBNScanned: { isbn in
+                    searchBook(isbn: isbn)
+                })
+            }
+            .sheet(isPresented: $showingISBNInput) {
+                IsbnInputView(onBookFound: { foundTitle, foundAuthor, foundYear, foundGenre, foundDescription, foundCoverImage in
+                    title = foundTitle
+                    author = foundAuthor
+                    year = foundYear
+                    genre = foundGenre
+                    description = foundDescription
+                    coverImageUrl = foundCoverImage
+                    viewModel.addBook(title: title, author: author, year: year, genre: genre, description: description, coverImageUrl: coverImageUrl)
+                    dismiss()
+                }, isbnService: GoogleBookIsbnService())
+            }
         }
-        .background(Color(UIColor.systemGroupedBackground))
-        .navigationBarHidden(true)
-        .sheet(isPresented: $showingISBNInput) {
-            IsbnInputView(onBookFound: { foundTitle, foundAuthor, foundYear, foundGenre, foundDescription, foundCoverImage in
-                title = foundTitle
-                author = foundAuthor
-                year = foundYear
-                genre = foundGenre
-                description = foundDescription
-                coverImageUrl = foundCoverImage
-            }, isbnService: GoogleBookIsbnService())
+    }
+
+    func searchBook(isbn: String) {
+        let isbnService = GoogleBookIsbnService()
+        isbnService.fetchBookDetails(isbn: isbn) { result in
+            switch result {
+            case .success(let bookDetails):
+                title = bookDetails.title
+                author = bookDetails.author
+                year = bookDetails.year
+                genre = bookDetails.genre
+                description = bookDetails.description
+                coverImageUrl = bookDetails.coverImageUrl
+                viewModel.addBook(title: title, author: author, year: year, genre: genre, description: description, coverImageUrl: coverImageUrl)
+                dismiss()
+            case .failure:
+                showingISBNInput = true
+            }
         }
     }
 }

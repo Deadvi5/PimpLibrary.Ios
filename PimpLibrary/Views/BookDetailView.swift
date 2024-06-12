@@ -1,10 +1,3 @@
-//
-//  BookDetailView.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 04/06/24.
-//
-
 import SwiftUI
 
 struct BookDetailView: View {
@@ -75,12 +68,9 @@ struct BookDetailView: View {
     }
 }
 
+
 struct BookDetailView_Previews: PreviewProvider {
     static var previews: some View {
         BookDetailView(viewModel: LibraryViewModel(bookRepository: InMemoryRepository()), book: Book(id: UUID(), title: "Sample Book", author: "Author", year: "2020", description: "An adventure", genre: "Thriller", coverImageUrl: "" ))
     }
 }
-
-
-
-	

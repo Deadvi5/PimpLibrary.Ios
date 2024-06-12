@@ -153,11 +153,6 @@ struct BookListView: View {
             }
         }
     }
-    
-    func confirmDelete(at book: Book) {
-        bookToDelete = book
-        showingAlert = true
-    }
 }
 
 struct BookListView_Previews: PreviewProvider {

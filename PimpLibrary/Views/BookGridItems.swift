@@ -4,13 +4,13 @@ struct BookGridItems: View {
     var filteredBooks: [Book]
     var viewModel: LibraryViewModel
     var refreshBooks: () -> Void
-    var confirmDelete: (Book) -> Void
+    var confirmDelete: (IndexSet) -> Void
     
     @State private var isEditing = false
     @State private var bookToDelete: Book?
     @State private var showingDeleteAlert = false
     @State private var shakeEffect = false
-
+    
     let columns = [
         GridItem(.flexible()),
         GridItem(.flexible()),
@@ -18,68 +18,51 @@ struct BookGridItems: View {
     ]
     
     var body: some View {
-        NavigationView {
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 10) {
+                LazyVGrid(columns: columns, spacing: 5) {
                     ForEach(filteredBooks) { book in
-                        ZStack(alignment: .topLeading) {
-                            if isEditing {
-                                Button(action: {
-                                    confirmDelete(book)
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(Color.gray)
-                                        .background(Color.white)
-                                        .clipShape(Circle())
+                        NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
+                            VStack {
+                                if !book.coverImageUrl.isEmpty, let url = URL(string: book.coverImageUrl) {
+                                    AsyncImage(url: url) { image in
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                    } placeholder: {
+                                        Color.gray
+                                    }
+                                    .frame(width: 100, height: 150)
+                                    .cornerRadius(10)
+                                } else {
+                                    VStack {
+                                        Text(book.title)
+                                            .font(.headline)
+                                            .foregroundColor(.white)
+                                        Text(book.author)
+                                            .font(.subheadline)
+                                            .foregroundColor(.white)
+                                    }
+                                    .frame(width: 100, height: 150)
+                                    .background(Color.gray)
+                                    .cornerRadius(10)
                                 }
-                                .offset(x: -5, y: -5)
-                                .zIndex(1)
                             }
-
-                            NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
-                                VStack {
-                                    if !book.coverImageUrl.isEmpty {
-                                        if let url = URL(string: book.coverImageUrl) {
-                                            AsyncImage(url: url)
-                                                .frame(width: 120, height: 160)
-                                                .cornerRadius(5)
-                                                .aspectRatio(contentMode: .fit)
-                                                .rotationEffect(.degrees(shakeEffect ? -2 : 0))
-                                                .animation(shakeEffect ? Animation.linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: shakeEffect)
-                                        }
-                                    } else {
-                                        VStack {
-                                            Text(book.title)
-                                                .font(.headline)
-                                                .multilineTextAlignment(.center)
-                                            Text(book.author)
-                                                .font(.subheadline)
-                                                .foregroundColor(.secondary)
-                                                .multilineTextAlignment(.center)
-                                        }
-                                        .frame(width: 120, height: 160)
-                                        .background(Color.gray.opacity(0.3))
-                                        .cornerRadius(5)
-                                        .rotationEffect(.degrees(shakeEffect ? -2 : 0))
-                                        .animation(shakeEffect ? Animation.linear(duration: 0.1).repeatForever(autoreverses: true) : .default, value: shakeEffect)
-                                    }
+                        }
+                        .contextMenu {
+                            Button(role: .destructive, action: {
+                                if let index = filteredBooks.firstIndex(of: book) {
+                                    confirmDelete(IndexSet(integer: index))
                                 }
-                                .contentShape(Rectangle())
-                                .onLongPressGesture {
-                                    withAnimation {
-                                        isEditing.toggle()
-                                        shakeEffect.toggle()
-                                    }
-                                }
+                            }) {
+                                Label("Delete", systemImage: "trash")
                             }
                         }
                     }
                 }
-                .padding(.horizontal)
+                .padding()
             }
-            .refreshable {
-                refreshBooks()
-            }
+        .refreshable {
+            refreshBooks()
         }
     }
 }

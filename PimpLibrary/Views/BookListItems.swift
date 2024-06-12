@@ -38,7 +38,7 @@ struct BookListItems: View {
                         }
                         .padding(.leading, 8)
                     }
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 5)
                 }
             }
             .onDelete(perform: confirmDelete)
@@ -49,3 +49,21 @@ struct BookListItems: View {
         }
     }
 }
+
+
+struct BookListItems_Previews: PreviewProvider {
+    static var previews: some View {
+        BookListItems(
+            filteredBooks:  [
+                Book(id: UUID(), title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: ""),
+                Book(id: UUID(), title: "Sample Book 2", author: "Author 2", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: ""),
+                Book(id: UUID(), title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: ""),
+            ],
+            viewModel: LibraryViewModel(bookRepository: InMemoryRepository()),
+            refreshBooks: {},
+            confirmDelete: { _ in }
+        )
+        .previewLayout(.sizeThatFits)
+    }
+}
+

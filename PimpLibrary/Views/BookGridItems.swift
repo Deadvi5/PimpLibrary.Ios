@@ -12,65 +12,73 @@ struct BookGridItems: View {
     @State private var shakeEffect = false
     
     let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
+        GridItem(.flexible(), spacing: 20),
+        GridItem(.flexible(), spacing: 20),
+        GridItem(.flexible(), spacing: 20)
     ]
     
     var body: some View {
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 5) {
-                    ForEach(filteredBooks) { book in
-                        NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
-                            VStack {
-                                if !book.coverImageUrl.isEmpty, let url = URL(string: book.coverImageUrl) {
-                                    AsyncImage(url: url) { image in
-                                        image
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                    } placeholder: {
-                                        Color.gray
-                                    }
-                                    .frame(width: 100, height: 150)
-                                    .cornerRadius(10)
-                                } else {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(filteredBooks) { book in
+                    NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
+                        VStack {
+                            if let url = URL(string: book.coverImageUrl), !book.coverImageUrl.isEmpty {
+                                AsyncImage(url: url) { image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                } placeholder: {
+                                    Color.gray
+                                }
+                                .frame(width: 120, height: 180)
+                                .clipped()
+                                .cornerRadius(10)
+                            } else {
+                                ZStack {
+                                    Color.gray
+                                        .frame(width: 120, height: 180)
+                                        .cornerRadius(10)
                                     VStack {
                                         Text(book.title)
                                             .font(.headline)
                                             .foregroundColor(.white)
+                                            .padding([.leading, .trailing], 5)
+                                            .multilineTextAlignment(.center)
                                         Text(book.author)
                                             .font(.subheadline)
                                             .foregroundColor(.white)
+                                            .padding([.leading, .trailing], 5)
+                                            .multilineTextAlignment(.center)
                                     }
-                                    .frame(width: 100, height: 150)
-                                    .background(Color.gray)
-                                    .cornerRadius(10)
                                 }
-                            }
-                        }
-                        .contextMenu {
-                            Button(role: .destructive, action: {
-                                if let index = filteredBooks.firstIndex(of: book) {
-                                    confirmDelete(IndexSet(integer: index))
-                                }
-                            }) {
-                                Label("Delete", systemImage: "trash")
                             }
                         }
                     }
+                    .contextMenu {
+                        Button(role: .destructive, action: {
+                            if let index = filteredBooks.firstIndex(of: book) {
+                                confirmDelete(IndexSet(integer: index))
+                            }
+                        }) {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
-                .padding()
             }
+            .padding(.all, 20)
+        }
         .refreshable {
             refreshBooks()
         }
     }
+    
 }
 
 struct BookGridItems_Previews: PreviewProvider {
     static var previews: some View {
         BookGridItems(
-            filteredBooks:  [
+            filteredBooks: [
                 Book(id: UUID(), title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: ""),
                 Book(id: UUID(), title: "Sample Book 2", author: "Author 2", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: ""),
                 Book(id: UUID(), title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: ""),

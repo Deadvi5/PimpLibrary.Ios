@@ -11,24 +11,28 @@ struct BookListItems: View {
             ForEach(filteredBooks) { book in
                 NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
                     HStack {
-                        if !book.coverImageUrl.isEmpty {
-                            if let url = URL(string: book.coverImageUrl) {
-                                AsyncImage(url: url)
-                                    .frame(width: 50, height: 75)
-                                    .cornerRadius(5)
+                        if let url = URL(string: book.coverImageUrl), !book.coverImageUrl.isEmpty {
+                            AsyncImage(url: url) { image in
+                                image
+                                    .resizable()
                                     .aspectRatio(contentMode: .fit)
+                            } placeholder: {
+                                Color.gray
                             }
+                            .frame(width: 50, height: 75)
+                            .cornerRadius(5)
                         } else {
                             Rectangle()
                                 .fill(Color.gray)
                                 .frame(width: 50, height: 75)
                                 .cornerRadius(5)
                         }
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 5) {
                             Text(book.title)
                                 .font(.headline)
                             Text(book.author)
                                 .font(.subheadline)
+                                .foregroundColor(.secondary)
                             Text(book.genre)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
@@ -44,12 +48,12 @@ struct BookListItems: View {
             .onDelete(perform: confirmDelete)
         }
         .listStyle(InsetGroupedListStyle())
+        .navigationTitle("Books")
         .refreshable {
             refreshBooks()
         }
     }
 }
-
 
 struct BookListItems_Previews: PreviewProvider {
     static var previews: some View {
@@ -66,4 +70,3 @@ struct BookListItems_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
     }
 }
-

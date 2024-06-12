@@ -4,5 +4,34 @@
 <dict>
 	<key>NSCameraUsageDescription</key>
 	<string>We need access to your camera to scan ISBN barcodes.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>We need access to your documents to import and export book data.</string>
+	<key>UISupportsDocumentBrowser</key>
+	<true/>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.yourcompany.pimplib</string>
+			<key>UTTypeDescription</key>
+			<string>Pimplib Book Data</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pimplib</string>
+				</array>
+				<key>public.mime-type</key>
+				<array>
+					<string>application/pimplib</string>
+				</array>
+			</dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

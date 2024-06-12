@@ -1,14 +1,7 @@
-//
-//  BookEntity.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 06/06/24.
-//
-
 import Foundation
 import RealmSwift
 
-class BookEntity: Object, Identifiable {
+class BookEntity: Object, Identifiable, Codable {
     @objc dynamic var id: String = UUID().uuidString
     @objc dynamic var title: String = ""
     @objc dynamic var author: String = ""
@@ -19,5 +12,9 @@ class BookEntity: Object, Identifiable {
 
     override static func primaryKey() -> String? {
         return "id"
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, author, year, bookDescription, genre, coverImageUrl
     }
 }

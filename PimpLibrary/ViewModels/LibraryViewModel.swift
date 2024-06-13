@@ -18,6 +18,8 @@ class LibraryViewModel: ObservableObject {
         }
     
     func addBook(title: String, author: String, year: String, genre: String, description: String, coverImageUrl: String) {
+        guard !title.isEmpty else { return }
+        
         let newBook = Book(id: UUID(), title: title, author: author, year: year, description: description, genre: genre, coverImageUrl: coverImageUrl)
         books.append(newBook)
         bookRepository.saveBook(book: newBook)

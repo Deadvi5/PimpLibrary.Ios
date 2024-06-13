@@ -9,7 +9,7 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
 
     class Coordinator: NSObject, AVCaptureMetadataOutputObjectsDelegate {
         var parent: BarcodeScannerView
-        var isCodeProcessed = false // Flag to prevent multiple calls
+        var isCodeProcessed = false
 
         init(parent: BarcodeScannerView) {
             self.parent = parent
@@ -25,8 +25,8 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         }
 
         func found(code: String) {
-            guard !isCodeProcessed else { return } // Prevent multiple processing
-            isCodeProcessed = true // Set the flag to true to prevent further processing
+            guard !isCodeProcessed else { return }
+            isCodeProcessed = true
 
             parent.isbn = code
             parent.onISBNScanned?(code)

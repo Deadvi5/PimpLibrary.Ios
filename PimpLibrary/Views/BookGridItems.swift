@@ -19,7 +19,7 @@ struct BookGridItems: View {
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns, spacing: 20) {
+            LazyVGrid(columns: columns, spacing: 5) {
                 ForEach(filteredBooks) { book in
                     NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
                         VStack {

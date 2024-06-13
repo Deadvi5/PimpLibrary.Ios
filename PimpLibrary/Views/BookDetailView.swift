@@ -83,7 +83,7 @@ struct BookDetailView: View {
                 .sheet(isPresented: $showCamera) {
                     CameraCaptureView(image: $capturedImage)
                 }
-                .onChange(of: capturedImage) { newImage in
+                .onChange(of: capturedImage) { newImage,_ in
                     if let newImage = newImage, let croppedImage = cropBookCover(from: newImage) {
                         book.coverImageData = croppedImage.jpegData(compressionQuality: 0.8)
                     }

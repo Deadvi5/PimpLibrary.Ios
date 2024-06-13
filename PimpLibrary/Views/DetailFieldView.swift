@@ -19,14 +19,14 @@ struct DetailFieldView: View {
             if isMultiline {
                 TextEditor(text: $text)
                     .padding(8)
-                    .background(Color(UIColor.secondarySystemBackground))
+                    .background(Color(UIColor.systemBackground))
                     .cornerRadius(8)
                     .foregroundColor(.primary)
-                    .frame(height: 100)
+                    .frame(height: 150)
             } else {
                 TextField(label, text: $text)
                     .padding(8)
-                    .background(Color(UIColor.secondarySystemBackground))
+                    .background(Color(UIColor.systemBackground))
                     .cornerRadius(8)
                     .foregroundColor(.primary)
             }

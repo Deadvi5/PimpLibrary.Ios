@@ -9,6 +9,7 @@ class BookEntity: Object, Identifiable, Codable {
     @objc dynamic var bookDescription: String = ""
     @objc dynamic var genre: String = ""
     @objc dynamic var coverImageUrl: String = ""
+    @objc dynamic var coverImageData: Data?
 
     override static func primaryKey() -> String? {
         return "id"

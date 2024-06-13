@@ -11,22 +11,34 @@ struct BookListItems: View {
             ForEach(filteredBooks) { book in
                 NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
                     HStack {
-                        if let url = URL(string: book.coverImageUrl), !book.coverImageUrl.isEmpty {
-                            AsyncImage(url: url) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                            } placeholder: {
-                                Color.gray
-                            }
-                            .frame(width: 50, height: 75)
-                            .cornerRadius(5)
+
+                        if let imageData = book.coverImageData, let uiImage = UIImage(data: imageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .frame(width: 60, height: 85)
+                                .clipped()
+                                .cornerRadius(10)
                         } else {
-                            Rectangle()
-                                .fill(Color.gray)
-                                .frame(width: 50, height: 75)
-                                .cornerRadius(5)
+                            if let url = URL(string: book.coverImageUrl), !book.coverImageUrl.isEmpty {
+                                AsyncImage(url: url) { image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                } placeholder: {
+                                    Color.gray
+                                }
+                                .frame(width: 60, height: 85)
+                                .clipped()
+                                .cornerRadius(10)
+                            } else {
+                                ZStack {
+                                    Color.gray
+                                        .frame(width: 60, height: 85)
+                                        .cornerRadius(10)
+                                }
+                            }
                         }
+                        
                         VStack(alignment: .leading, spacing: 5) {
                             Text(book.title)
                                 .font(.headline)

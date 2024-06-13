@@ -11,9 +11,19 @@ import RealmSwift
 class RealmBookRepository : BookRepository {
     
     init() {
-        //deleteRealmFile()
+        configureRealm()
     }
     
+    private func configureRealm() {
+        let config = Realm.Configuration(
+            schemaVersion: 2,
+            migrationBlock: { migration, oldSchemaVersion in
+                if oldSchemaVersion < 1 {
+                }
+            })
+        
+        Realm.Configuration.defaultConfiguration = config
+    }
     
     func deleteRealmFile() {
         if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
@@ -46,6 +56,7 @@ class RealmBookRepository : BookRepository {
                 existingBookEntity.bookDescription = book.description
                 existingBookEntity.genre = book.genre
                 existingBookEntity.coverImageUrl = book.coverImageUrl
+                existingBookEntity.coverImageData = book.coverImageData
             } else {
                 let bookEntity = BookEntity()
                 bookEntity.id = book.id.uuidString
@@ -55,6 +66,7 @@ class RealmBookRepository : BookRepository {
                 bookEntity.bookDescription = book.description
                 bookEntity.genre = book.genre
                 bookEntity.coverImageUrl = book.coverImageUrl
+                bookEntity.coverImageData = book.coverImageData
                 realm.add(bookEntity)
             }
         }
@@ -76,7 +88,7 @@ class RealmBookRepository : BookRepository {
         var books:[Book] = []
         
         for bookEntity in bookEntities {
-            let book = Book(id: UUID(uuidString: bookEntity.id)!, title: bookEntity.title, author: bookEntity.author, year: bookEntity.year, description: bookEntity.bookDescription, genre: bookEntity.genre, coverImageUrl: bookEntity.coverImageUrl)
+            let book = Book(id: UUID(uuidString: bookEntity.id)!, title: bookEntity.title, author: bookEntity.author, year: bookEntity.year, description: bookEntity.bookDescription, genre: bookEntity.genre, coverImageUrl: bookEntity.coverImageUrl, coverImageData: bookEntity.coverImageData)
             books.append(book)
         }
         

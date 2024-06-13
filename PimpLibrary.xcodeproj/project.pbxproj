@@ -39,6 +39,7 @@
 		AB9160C42C11F2CA005F6AC4 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AB9160C32C11F2CA005F6AC4 /* RealmSwift */; };
 		AB9160C62C11FD31005F6AC4 /* BookEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9160C52C11FD31005F6AC4 /* BookEntity.swift */; };
 		ABA807F42C18599000B816EB /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = AB9160C32C11F2CA005F6AC4 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		ABA807FB2C1AEB1900B816EB /* CameraCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA807FA2C1AEB1900B816EB /* CameraCaptureView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +108,7 @@
 		AB9160BE2C11EF08005F6AC4 /* UrlUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlUtilities.swift; sourceTree = "<group>"; };
 		AB9160C02C11EF80005F6AC4 /* GoogleBookApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBookApi.swift; sourceTree = "<group>"; };
 		AB9160C52C11FD31005F6AC4 /* BookEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookEntity.swift; sourceTree = "<group>"; };
+		ABA807FA2C1AEB1900B816EB /* CameraCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCaptureView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -259,6 +261,7 @@
 				AB6186892C134E930001E944 /* SettingsView.swift */,
 				AB61868D2C1700250001E944 /* BookGridItems.swift */,
 				AB61868F2C1702530001E944 /* BookListItems.swift */,
+				ABA807FA2C1AEB1900B816EB /* CameraCaptureView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -424,6 +427,7 @@
 				AB9160B72C11AE7D005F6AC4 /* AsyncImageView.swift in Sources */,
 				AB0592C02C12FA8800502CFE /* RealmBookRepository.swift in Sources */,
 				AB6186882C134E740001E944 /* StartView.swift in Sources */,
+				ABA807FB2C1AEB1900B816EB /* CameraCaptureView.swift in Sources */,
 				AB9160BD2C11EED7005F6AC4 /* ImageUtilities.swift in Sources */,
 				AB61868E2C1700250001E944 /* BookGridItems.swift in Sources */,
 				AB6F51382C0F4D90003E8231 /* BookListView.swift in Sources */,

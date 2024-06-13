@@ -17,21 +17,22 @@ class LibraryViewModel: ObservableObject {
             self.books = bookRepository.fetchBooks()
         }
     
-    func addBook(title: String, author: String, year: String, genre: String, description: String, coverImageUrl: String) {
+    func addBook(title: String, author: String, year: String, genre: String, description: String, coverImageUrl: String, coverImageData: Data?) {
         guard !title.isEmpty else { return }
         
-        let newBook = Book(id: UUID(), title: title, author: author, year: year, description: description, genre: genre, coverImageUrl: coverImageUrl)
+        let newBook = Book(id: UUID(), title: title, author: author, year: year, description: description, genre: genre, coverImageUrl: coverImageUrl, coverImageData: coverImageData)
         books.append(newBook)
         bookRepository.saveBook(book: newBook)
     }
     
-    func editBook(book: Book, title: String, author: String, year: String, genre: String, description: String) {
+    func editBook(book: Book, title: String, author: String, year: String, genre: String, description: String, bookCoverImageData: Data?) {
         if let index = books.firstIndex(where: { $0.id == book.id }) {
             books[index].title = title
             books[index].author = author
             books[index].year = year
             books[index].genre = genre
             books[index].description = description
+            books[index].coverImageData = bookCoverImageData
             bookRepository.saveBook(book: books[index])
         }
     }

@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import CoreImage
+import UIKit
 
 class ImageUtilities: ObservableObject {
     @Published var image: UIImage?
@@ -23,5 +25,23 @@ class ImageUtilities: ObservableObject {
                 self.image = uiImage
             }
         }.resume()
+    }
+    
+    static func cropBookCover(from image: UIImage) -> UIImage? {
+        guard let ciImage = CIImage(image: image) else { return nil }
+
+        let detector = CIDetector(ofType: CIDetectorTypeRectangle, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
+        let features = detector?.features(in: ciImage) as? [CIRectangleFeature]
+
+        if let feature = features?.first {
+            let croppedCIImage = ciImage.cropped(to: feature.bounds)
+            let context = CIContext()
+            
+            if let cgImage = context.createCGImage(croppedCIImage, from: croppedCIImage.extent) {
+                let croppedUIImage = UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
+                return croppedUIImage
+            }
+        }
+        return nil
     }
 }

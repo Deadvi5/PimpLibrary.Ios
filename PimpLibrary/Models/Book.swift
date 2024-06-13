@@ -15,4 +15,5 @@ struct Book: Identifiable, Equatable {
     var description: String
     var genre: String
     var coverImageUrl: String
+    var coverImageData: Data?
 }

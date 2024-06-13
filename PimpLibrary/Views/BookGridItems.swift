@@ -23,33 +23,41 @@ struct BookGridItems: View {
                 ForEach(filteredBooks) { book in
                     NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
                         VStack {
-                            if let url = URL(string: book.coverImageUrl), !book.coverImageUrl.isEmpty {
-                                AsyncImage(url: url) { image in
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                } placeholder: {
-                                    Color.gray
-                                }
-                                .frame(width: 120, height: 180)
-                                .clipped()
-                                .cornerRadius(10)
+                            if let imageData = book.coverImageData, let uiImage = UIImage(data: imageData) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .frame(width: 120, height: 180)
+                                    .clipped()
+                                    .cornerRadius(10)
                             } else {
-                                ZStack {
-                                    Color.gray
-                                        .frame(width: 120, height: 180)
-                                        .cornerRadius(10)
-                                    VStack {
-                                        Text(book.title)
-                                            .font(.headline)
-                                            .foregroundColor(.white)
-                                            .padding([.leading, .trailing], 5)
-                                            .multilineTextAlignment(.center)
-                                        Text(book.author)
-                                            .font(.subheadline)
-                                            .foregroundColor(.white)
-                                            .padding([.leading, .trailing], 5)
-                                            .multilineTextAlignment(.center)
+                                if let url = URL(string: book.coverImageUrl), !book.coverImageUrl.isEmpty {
+                                    AsyncImage(url: url) { image in
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                    } placeholder: {
+                                        Color.gray
+                                    }
+                                    .frame(width: 120, height: 180)
+                                    .clipped()
+                                    .cornerRadius(10)
+                                } else {
+                                    ZStack {
+                                        Color.gray
+                                            .frame(width: 120, height: 180)
+                                            .cornerRadius(10)
+                                        VStack {
+                                            Text(book.title)
+                                                .font(.headline)
+                                                .foregroundColor(.white)
+                                                .padding([.leading, .trailing], 5)
+                                                .multilineTextAlignment(.center)
+                                            Text(book.author)
+                                                .font(.subheadline)
+                                                .foregroundColor(.white)
+                                                .padding([.leading, .trailing], 5)
+                                                .multilineTextAlignment(.center)
+                                        }
                                     }
                                 }
                             }
@@ -82,6 +90,9 @@ struct BookGridItems_Previews: PreviewProvider {
                 Book(id: UUID(), title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: ""),
                 Book(id: UUID(), title: "Sample Book 2", author: "Author 2", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: ""),
                 Book(id: UUID(), title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: ""),
+                Book(id: UUID(), title: "Sample Book 4", author: "Author 4", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: ""),
+                Book(id: UUID(), title: "Sample Book 5", author: "Author 5", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: ""),
+                Book(id: UUID(), title: "Sample Book 6", author: "Author 6", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: ""),
             ],
             viewModel: LibraryViewModel(bookRepository: InMemoryRepository()),
             refreshBooks: {},

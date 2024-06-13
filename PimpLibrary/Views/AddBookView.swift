@@ -16,22 +16,6 @@ struct AddBookView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        HStack {
-                            Image(systemName: "chevron.left")
-                                .font(.headline)
-                            Text("Back")
-                                .font(.headline)
-                        }
-                        .foregroundColor(.blue)
-                    }
-                    Spacer()
-                }
-                .padding([.top, .horizontal])
-                
                 Text("Add Book")
                     .font(.largeTitle)
                     .fontWeight(.bold)

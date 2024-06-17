@@ -84,7 +84,7 @@ struct BookDetailView: View {
                     CameraCaptureView(image: $capturedImage)
                 }
                 .onChange(of: capturedImage) { newImage,_ in
-                    if let newImage = newImage, let croppedImage = cropBookCover(from: newImage) {
+                    if let newImage = newImage, let croppedImage = ImageUtilities.cropBookCover(from: newImage) {
                         book.coverImageData = croppedImage.jpegData(compressionQuality: 0.8)
                     }
                 }
@@ -128,25 +128,6 @@ struct BookDetailView: View {
         }
         .background(Color(UIColor.systemGroupedBackground))
         .navigationBarHidden(true)
-    }
-
-    // Function to crop the book cover (using the previous implementation)
-    private func cropBookCover(from image: UIImage) -> UIImage? {
-        guard let ciImage = CIImage(image: image) else { return nil }
-
-        let detector = CIDetector(ofType: CIDetectorTypeRectangle, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
-        let features = detector?.features(in: ciImage) as? [CIRectangleFeature]
-
-        if let feature = features?.first {
-            let croppedCIImage = ciImage.cropped(to: feature.bounds)
-            let context = CIContext()
-            
-            if let cgImage = context.createCGImage(croppedCIImage, from: croppedCIImage.extent) {
-                let croppedUIImage = UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
-                return croppedUIImage
-            }
-        }
-        return nil
     }
 }
 

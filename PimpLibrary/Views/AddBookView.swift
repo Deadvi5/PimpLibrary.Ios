@@ -11,7 +11,7 @@ struct AddBookView: View {
     @State private var coverImageData: Data?
     
     @State private var showingISBNInput = false
-    @State private var showingBarcodeScanner = true
+    @State private var showingBarcodeScanner = false
     @State private var showCamera = false
     @State private var capturedImage: UIImage?
     @Environment(\.dismiss) private var dismiss
@@ -92,7 +92,7 @@ struct AddBookView: View {
                     CameraCaptureView(image: $capturedImage)
                 }
                 .onChange(of: capturedImage) { newImage,_ in
-                    if let newImage = newImage, let croppedImage = cropBookCover(from: newImage) {
+                    if let newImage = newImage, let croppedImage = ImageUtilities.cropBookCover(from: newImage) {
                         coverImageData = croppedImage.jpegData(compressionQuality: 0.8)
                     }
                 }
@@ -140,6 +140,11 @@ struct AddBookView: View {
             .padding(.vertical)
             .background(Color(UIColor.systemGroupedBackground))
             .navigationBarHidden(true)
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    showingBarcodeScanner = true
+                }
+            }
             .sheet(isPresented: $showingBarcodeScanner) {
                 BarcodeScannerView(isbn: .constant(""), onISBNScanned: { isbn in
                     searchBook(isbn: isbn)
@@ -178,25 +183,6 @@ struct AddBookView: View {
                 showingISBNInput = true
             }
         }
-    }
-    
-    // Function to crop the book cover (using the previous implementation)
-    private func cropBookCover(from image: UIImage) -> UIImage? {
-        guard let ciImage = CIImage(image: image) else { return nil }
-        
-        let detector = CIDetector(ofType: CIDetectorTypeRectangle, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
-        let features = detector?.features(in: ciImage) as? [CIRectangleFeature]
-        
-        if let feature = features?.first {
-            let croppedCIImage = ciImage.cropped(to: feature.bounds)
-            let context = CIContext()
-            
-            if let cgImage = context.createCGImage(croppedCIImage, from: croppedCIImage.extent) {
-                let croppedUIImage = UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
-                return croppedUIImage
-            }
-        }
-        return nil
     }
 }
 

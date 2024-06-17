@@ -50,15 +50,19 @@ struct BookGridItems: View {
     }
 
     private func sectionHeader(title: String) -> some View {
-        Text(title)
-            .font(.title2)
-            .bold()
-            .padding(.vertical, 5)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(UIColor.systemGray5))
-            .cornerRadius(8)
-            .padding(.horizontal, -16) // Adjust for the outer padding
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.title2)
+                .bold()
+                .padding(.vertical, 5)
+                .padding(.horizontal, -16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Divider()
+                .background(Color(UIColor.systemGray4))
+                .padding(.horizontal, -16)
+        }
     }
+
 
     private func bookGridItemView(book: Book) -> some View {
         NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {

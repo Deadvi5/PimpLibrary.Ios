@@ -4,13 +4,15 @@ struct BookDetailView: View {
     @ObservedObject var viewModel: LibraryViewModel
     @State var book: Book
     @State private var showCamera = false
+    @State private var showImagePicker = false
     @State private var capturedImage: UIImage?
+    @State private var selectedImage: UIImage?
+    @State private var showingActionSheet = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // Top Bar with Back Button
                 HStack {
                     Button(action: {
                         dismiss()
@@ -27,13 +29,11 @@ struct BookDetailView: View {
                 }
                 .padding([.top, .horizontal])
                 
-                // Title
                 Text("Edit Book")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.horizontal)
                 
-                // Book Cover Image with Tap Gesture to Open Camera
                 VStack {
                     if let imageData = book.coverImageData, let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
@@ -42,9 +42,6 @@ struct BookDetailView: View {
                             .frame(height: 200)
                             .cornerRadius(10)
                             .shadow(radius: 5)
-                            .onTapGesture {
-                                showCamera = true
-                            }
                     } else if let url = URL(string: book.coverImageUrl), !book.coverImageUrl.isEmpty {
                         AsyncImage(url: url) { image in
                             image
@@ -56,9 +53,6 @@ struct BookDetailView: View {
                         .frame(height: 200)
                         .cornerRadius(10)
                         .shadow(radius: 5)
-                        .onTapGesture {
-                            showCamera = true
-                        }
                     } else {
                         Color.gray
                             .frame(height: 200)
@@ -74,22 +68,29 @@ struct BookDetailView: View {
                                         .foregroundColor(.white)
                                 }
                             )
-                            .onTapGesture {
-                                showCamera = true
-                            }
                     }
                 }
                 .padding(.horizontal)
+                .onTapGesture {
+                    showImageOptions()
+                }
                 .sheet(isPresented: $showCamera) {
                     CameraCaptureView(image: $capturedImage)
                 }
-                .onChange(of: capturedImage) { newImage,_ in
-                    if let newImage = newImage, let croppedImage = ImageUtilities.cropBookCover(from: newImage) {
-                        book.coverImageData = croppedImage.jpegData(compressionQuality: 0.8)
+                .sheet(isPresented: $showImagePicker) {
+                    ImagePicker(image: $selectedImage)
+                }
+                .onChange(of: capturedImage) { newImage in
+                    if let newImage = newImage {
+                        updateBookCoverImage(newImage)
+                    }
+                }
+                .onChange(of: selectedImage) { newImage in
+                    if let newImage = newImage {
+                        updateBookCoverImage(newImage)
                     }
                 }
 
-                // Book Details Form
                 Group {
                     DetailFieldView(label: "Title", text: $book.title)
                     DetailFieldView(label: "Author", text: $book.author)
@@ -128,6 +129,30 @@ struct BookDetailView: View {
         }
         .background(Color(UIColor.systemGroupedBackground))
         .navigationBarHidden(true)
+        .actionSheet(isPresented: $showingActionSheet) {
+            ActionSheet(
+                title: Text("Select Cover Image"),
+                message: nil,
+                buttons: [
+                    .default(Text("Take Photo")) {
+                        showCamera = true
+                    },
+                    .default(Text("Choose from Gallery")) {
+                        showImagePicker = true
+                    },
+                    .cancel()
+                ]
+            )
+        }
+    }
+    
+    private func showImageOptions() {
+        showingActionSheet = true
+    }
+
+    private func updateBookCoverImage(_ newImage: UIImage) {
+            book.coverImageData = newImage.jpegData(compressionQuality: 0.8)
+            book = book
     }
 }
 

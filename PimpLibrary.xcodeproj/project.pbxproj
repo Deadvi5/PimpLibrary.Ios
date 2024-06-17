@@ -11,6 +11,7 @@
 		AB0592C02C12FA8800502CFE /* RealmBookRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0592BF2C12FA8800502CFE /* RealmBookRepository.swift */; };
 		AB0592C22C12FD2F00502CFE /* InMemoryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0592C12C12FD2F00502CFE /* InMemoryRepository.swift */; };
 		AB0592C62C13016200502CFE /* IsbnService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0592C52C13016200502CFE /* IsbnService.swift */; };
+		AB28FF872C207847005C9896 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB28FF862C207847005C9896 /* ImagePicker.swift */; };
 		AB6186802C1302930001E944 /* GoogleBookIsbnService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB61867F2C1302920001E944 /* GoogleBookIsbnService.swift */; };
 		AB6186822C13085D0001E944 /* DetailFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6186812C13085D0001E944 /* DetailFieldView.swift */; };
 		AB6186842C1336E90001E944 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6186832C1336E90001E944 /* SearchBarView.swift */; };
@@ -78,6 +79,7 @@
 		AB0592BF2C12FA8800502CFE /* RealmBookRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmBookRepository.swift; sourceTree = "<group>"; };
 		AB0592C12C12FD2F00502CFE /* InMemoryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryRepository.swift; sourceTree = "<group>"; };
 		AB0592C52C13016200502CFE /* IsbnService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsbnService.swift; sourceTree = "<group>"; };
+		AB28FF862C207847005C9896 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		AB61867F2C1302920001E944 /* GoogleBookIsbnService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleBookIsbnService.swift; sourceTree = "<group>"; };
 		AB6186812C13085D0001E944 /* DetailFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFieldView.swift; sourceTree = "<group>"; };
 		AB6186832C1336E90001E944 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
@@ -261,7 +263,6 @@
 				AB6186892C134E930001E944 /* SettingsView.swift */,
 				AB61868D2C1700250001E944 /* BookGridItems.swift */,
 				AB61868F2C1702530001E944 /* BookListItems.swift */,
-				ABA807FA2C1AEB1900B816EB /* CameraCaptureView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -276,8 +277,10 @@
 		AB9160BB2C11EEB9005F6AC4 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				ABA807FA2C1AEB1900B816EB /* CameraCaptureView.swift */,
 				AB9160BC2C11EED7005F6AC4 /* ImageUtilities.swift */,
 				AB9160BE2C11EF08005F6AC4 /* UrlUtilities.swift */,
+				AB28FF862C207847005C9896 /* ImagePicker.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -422,6 +425,7 @@
 				AB6186862C133BE70001E944 /* BarcodeScannerView.swift in Sources */,
 				AB61868C2C13615E0001E944 /* SettingsViewModel.swift in Sources */,
 				AB9160BF2C11EF09005F6AC4 /* UrlUtilities.swift in Sources */,
+				AB28FF872C207847005C9896 /* ImagePicker.swift in Sources */,
 				AB9160C12C11EF80005F6AC4 /* GoogleBookApi.swift in Sources */,
 				AB6F51342C0F4C4D003E8231 /* Book.swift in Sources */,
 				AB9160B72C11AE7D005F6AC4 /* AsyncImageView.swift in Sources */,

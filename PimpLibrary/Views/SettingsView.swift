@@ -7,10 +7,11 @@ struct SettingsView: View {
     @State private var showingExportSheet = false
     @State private var showingImportPicker = false
     @State private var showingSuccessMessage = false
+    @AppStorage("groupBy") private var groupBy: String = "None"
     
     var body: some View {
         Form {
-            Section(header: Text("Delete Data")) {
+            Section(header: Text("Delete Data").font(.headline)) {
                 Button(action: {
                     showingAlert = true
                 }) {
@@ -29,7 +30,7 @@ struct SettingsView: View {
                 }
             }
             
-            Section(header: Text("Import and Export Data")) {
+            Section(header: Text("Import and Export Data").font(.headline)) {
                 Button(action: {
                     viewModel.exportBooks()
                     showingExportSheet = true
@@ -82,15 +83,31 @@ struct SettingsView: View {
                 }
             }
             
-            Section(header: Text("View Options")) {
+            Section(header: Text("View Options").font(.headline)) {
                 Toggle(isOn: $viewModel.useGridView) {
                     Text("Use Grid View")
                 }
-                .onChange(of: viewModel.useGridView ) { _,_ in
+                .onChange(of: viewModel.useGridView) { _,_ in
                     viewModel.toggleUseGridView()
+                }
+                
+                VStack(alignment: .leading) {
+                    Text("Group Books By")
+                    Picker("Group Books By", selection: $groupBy) {
+                        Text("None").tag("None")
+                        Text("Genre").tag("Genre")
+                        Text("Author").tag("Author")
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
                 }
             }
         }
         .navigationBarTitle("Settings", displayMode: .inline)
+    }
+}
+
+struct SettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        SettingsView()
     }
 }

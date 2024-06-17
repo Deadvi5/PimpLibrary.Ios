@@ -38,7 +38,7 @@ class GoogleBookIsbnService: IsbnService {
                     let author = book.volumeInfo.authors?.first ?? "Unknown Author"
                     let year = book.volumeInfo.publishedDate?.prefix(4) ?? "Unknown Year"
                     let description = book.volumeInfo.description ?? "Unknown Description"
-                    let genre = book.volumeInfo.categories?.first ?? "Unknown Genre"
+                    let genre = book.volumeInfo.categories?.first?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "Unknown Genre"
                     let coverImageUrl = (book.volumeInfo.imageLinks?.thumbnail ?? "").replacingOccurrences(of: "http://", with: "https://")
 
                     let bookDetails = Book(

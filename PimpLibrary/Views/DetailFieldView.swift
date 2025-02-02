@@ -1,10 +1,3 @@
-//
-//  DetailFieldView.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 07/06/24.
-//
-
 import SwiftUI
 
 struct DetailFieldView: View {
@@ -13,7 +6,7 @@ struct DetailFieldView: View {
     var isMultiline: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             Text(label)
                 .font(.headline)
             if isMultiline {
@@ -36,7 +29,6 @@ struct DetailFieldView: View {
 
 struct DetailFieldView_Previews: PreviewProvider {
     @State static var sampleText = "Mark"
-
     static var previews: some View {
         DetailFieldView(label: "Name", text: $sampleText)
             .previewLayout(.sizeThatFits)

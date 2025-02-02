@@ -1,10 +1,3 @@
-//
-//  StartView.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 07/06/24.
-//
-
 import SwiftUI
 
 struct StartView: View {
@@ -41,4 +34,3 @@ struct StartView_Previews: PreviewProvider {
         StartView(viewModel: LibraryViewModel(bookRepository: InMemoryRepository()))
     }
 }
-

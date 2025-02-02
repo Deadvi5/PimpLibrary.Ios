@@ -10,12 +10,11 @@ class BookEntity: Object, Identifiable, Codable {
     @objc dynamic var genre: String = ""
     @objc dynamic var coverImageUrl: String = ""
     @objc dynamic var coverImageData: Data?
+    @objc dynamic var currentPage: Int = 0
+    @objc dynamic var totalPages: Int = 0
+    @objc dynamic var isbn: String = "" // Nuova proprietà per ISBN
 
     override static func primaryKey() -> String? {
         return "id"
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case id, title, author, year, bookDescription, genre, coverImageUrl
     }
 }

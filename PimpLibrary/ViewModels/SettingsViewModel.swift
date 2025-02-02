@@ -12,11 +12,13 @@ class SettingsViewModel: ObservableObject {
     @Published var useGridView: Bool = UserDefaults.standard.bool(forKey: "useGridView")
     @Published var exportedFile: ExportedFile? = nil
 
+    /// Alterna la modalità di visualizzazione (griglia o lista)
     func toggleUseGridView() {
         useGridView.toggle()
         UserDefaults.standard.set(useGridView, forKey: "useGridView")
     }
 
+    /// Elimina i file di Realm (utile per il reset dei dati)
     func deleteRealmFile() {
         if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
             let realmURLs = [
@@ -25,7 +27,6 @@ class SettingsViewModel: ObservableObject {
                 realmURL.appendingPathExtension("note"),
                 realmURL.appendingPathExtension("management")
             ]
-            
             for url in realmURLs {
                 do {
                     try FileManager.default.removeItem(at: url)
@@ -37,12 +38,12 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    /// Esporta i libri in un file JSON.
     func exportBooks() {
         let realm = try! Realm()
         let books = realm.objects(BookEntity.self)
         let booksArray = Array(books)
         let jsonEncoder = JSONEncoder()
-        
         do {
             let jsonData = try jsonEncoder.encode(booksArray)
             exportedFile = ExportedFile(data: jsonData)
@@ -51,19 +52,14 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    /// Importa i libri da un file JSON.
     func importBooks(from url: URL, completion: @escaping (Bool) -> Void) {
         do {
             let isAccessing = url.startAccessingSecurityScopedResource()
-            defer {
-                if isAccessing {
-                    url.stopAccessingSecurityScopedResource()
-                }
-            }
-
+            defer { if isAccessing { url.stopAccessingSecurityScopedResource() } }
             let jsonData = try Data(contentsOf: url)
             let jsonDecoder = JSONDecoder()
             let books = try jsonDecoder.decode([BookEntity].self, from: jsonData)
-            
             let realm = try! Realm()
             try realm.write {
                 realm.delete(realm.objects(BookEntity.self))

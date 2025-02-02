@@ -5,10 +5,11 @@ struct BookListItems: View {
     var viewModel: LibraryViewModel
     var refreshBooks: () -> Void
     var confirmDelete: (IndexSet) -> Void
-
+    
     @AppStorage("groupBy") private var groupBy: String = "None"
-
-    var groupedBooks: [String: [Book]] {
+    
+    // Raggruppa i libri in base al criterio selezionato
+    private var groupedBooks: [String: [Book]] {
         switch groupBy {
         case "Genre":
             return Dictionary(grouping: filteredBooks, by: { $0.genre })
@@ -18,7 +19,7 @@ struct BookListItems: View {
             return ["All Books": filteredBooks]
         }
     }
-
+    
     var body: some View {
         List {
             ForEach(groupedBooks.keys.sorted(), id: \.self) { key in
@@ -32,14 +33,10 @@ struct BookListItems: View {
                 }
             }
         }
-        .onAppear {
-            refreshBooks()
-        }
-        .refreshable {
-            refreshBooks()
-        }
+        .onAppear { refreshBooks() }
+        .refreshable { refreshBooks() }
     }
-
+    
     private func navigationLinkForBook(book: Book) -> some View {
         NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
             BookListItem(book: book)
@@ -49,13 +46,12 @@ struct BookListItems: View {
                             confirmDelete(IndexSet(integer: index))
                         }
                     }) {
-                        Text("Delete")
-                        Image(systemName: "trash")
+                        Label("Delete", systemImage: "trash")
                     }
                 }
         }
     }
-
+    
     private func handleDelete(at indexSet: IndexSet, for key: String) {
         guard let index = indexSet.first else { return }
         let book = groupedBooks[key]![index]
@@ -67,7 +63,7 @@ struct BookListItems: View {
 
 struct BookListItem: View {
     var book: Book
-
+    
     var body: some View {
         HStack {
             bookImageView
@@ -75,7 +71,7 @@ struct BookListItem: View {
         }
         .padding(.vertical, 5)
     }
-
+    
     private var bookImageView: some View {
         Group {
             if let imageData = book.coverImageData, let uiImage = UIImage(data: imageData) {
@@ -86,9 +82,7 @@ struct BookListItem: View {
                     .cornerRadius(10)
             } else if let url = URL(string: book.coverImageUrl), !book.coverImageUrl.isEmpty {
                 AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
+                    image.resizable().aspectRatio(contentMode: .fill)
                 } placeholder: {
                     Color.gray
                 }
@@ -104,7 +98,7 @@ struct BookListItem: View {
             }
         }
     }
-
+    
     private var bookInfoView: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(book.title)
@@ -118,6 +112,10 @@ struct BookListItem: View {
             Text(book.year)
                 .font(.caption)
                 .foregroundColor(.secondary)
+            if book.totalPages > 0 {
+                ReadingProgressView(currentPage: book.currentPage, totalPages: book.totalPages)
+                    .padding(.top, 4)
+            }
         }
         .padding(.leading, 8)
     }
@@ -126,10 +124,10 @@ struct BookListItem: View {
 struct BookListItems_Previews: PreviewProvider {
     static var previews: some View {
         BookListItems(
-            filteredBooks:  [
-                Book(id: UUID(), title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: ""),
-                Book(id: UUID(), title: "Sample Book 2", author: "Author 2", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: ""),
-                Book(id: UUID(), title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: ""),
+            filteredBooks: [
+                Book(id: UUID(), isbn: "1111111111", title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: "", coverImageData: nil, currentPage: 150, totalPages: 300),
+                Book(id: UUID(), isbn: "2222222222", title: "Sample Book 2", author: "Author 2", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: "", coverImageData: nil, currentPage: 120, totalPages: 450),
+                Book(id: UUID(), isbn: "3333333333", title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: "", coverImageData: nil, currentPage: 0, totalPages: 280)
             ],
             viewModel: LibraryViewModel(bookRepository: InMemoryRepository()),
             refreshBooks: {},

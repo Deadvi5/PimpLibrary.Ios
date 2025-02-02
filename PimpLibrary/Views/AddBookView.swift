@@ -9,6 +9,7 @@ struct AddBookView: View {
     @State private var description: String = ""
     @State private var coverImageUrl: String = ""
     @State private var coverImageData: Data?
+    @State private var totalPages: Int = 0
     
     @State private var showingISBNInput = false
     @State private var showingBarcodeScanner = false
@@ -19,58 +20,45 @@ struct AddBookView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                // Back Button
                 HStack {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        HStack {
-                            Image(systemName: "chevron.left")
-                                .font(.headline)
-                            Text("Back")
-                                .font(.headline)
-                        }
-                        .foregroundColor(.blue)
+                    Button(action: { dismiss() }) {
+                        Label("Back", systemImage: "chevron.left")
+                            .foregroundColor(.blue)
                     }
                     Spacer()
                 }
                 .padding([.top, .horizontal])
                 
-                // Title
                 Text("Add Book")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.horizontal)
                 
-                // Book Cover Image with Tap Gesture to Open Camera
+                // Cover Image
                 VStack {
                     if let imageData = coverImageData, let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 200)
-                            .cornerRadius(10)
+                            .frame(height: 220)
+                            .cornerRadius(12)
                             .shadow(radius: 5)
-                            .onTapGesture {
-                                showCamera = true
-                            }
+                            .onTapGesture { showCamera = true }
                     } else if let url = URL(string: coverImageUrl), !coverImageUrl.isEmpty {
                         AsyncImage(url: url) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
+                            image.resizable().aspectRatio(contentMode: .fit)
                         } placeholder: {
                             Color.gray
                         }
-                        .frame(height: 200)
-                        .cornerRadius(10)
+                        .frame(height: 220)
+                        .cornerRadius(12)
                         .shadow(radius: 5)
-                        .onTapGesture {
-                            showCamera = true
-                        }
+                        .onTapGesture { showCamera = true }
                     } else {
                         Color.gray
-                            .frame(height: 200)
-                            .cornerRadius(10)
+                            .frame(height: 220)
+                            .cornerRadius(12)
                             .shadow(radius: 5)
                             .overlay(
                                 VStack {
@@ -82,18 +70,15 @@ struct AddBookView: View {
                                         .foregroundColor(.white)
                                 }
                             )
-                            .onTapGesture {
-                                showCamera = true
-                            }
+                            .onTapGesture { showCamera = true }
                     }
                 }
                 .padding(.horizontal)
-                .sheet(isPresented: $showCamera) {
-                    CameraCaptureView(image: $capturedImage)
-                }
-                .onChange(of: capturedImage) { newImage,_ in
-                    if let newImage = newImage, let croppedImage = ImageUtilities.cropBookCover(from: newImage) {
-                        coverImageData = croppedImage.jpegData(compressionQuality: 0.8)
+                .sheet(isPresented: $showCamera) { CameraCaptureView(image: $capturedImage) }
+                .onChange(of: capturedImage) { newImage, _ in
+                    if let newImage = newImage,
+                       let cropped = ImageUtilities.cropBookCover(from: newImage) {
+                        coverImageData = cropped.jpegData(compressionQuality: 0.8)
                     }
                 }
                 
@@ -107,10 +92,9 @@ struct AddBookView: View {
                 }
                 .padding(.horizontal)
                 
+                // Buttons
                 HStack(spacing: 16) {
-                    Button(action: {
-                        showingBarcodeScanner = true
-                    }) {
+                    Button(action: { showingBarcodeScanner = true }) {
                         Text("Scan ISBN")
                             .font(.headline)
                             .foregroundColor(.white)
@@ -121,7 +105,17 @@ struct AddBookView: View {
                     }
                     
                     Button(action: {
-                        viewModel.addBook(title: title, author: author, year: year, genre: genre, description: description, coverImageUrl: coverImageUrl, coverImageData: coverImageData)
+                        viewModel.addBook(
+                            title: title,
+                            author: author,
+                            year: year,
+                            genre: genre,
+                            description: description,
+                            coverImageUrl: coverImageUrl,
+                            coverImageData: coverImageData,
+                            currentPage: 0,
+                            totalPages: totalPages
+                        )
                         dismiss()
                     }) {
                         Text("Add")
@@ -141,6 +135,7 @@ struct AddBookView: View {
             .background(Color(UIColor.systemGroupedBackground))
             .navigationBarHidden(true)
             .onAppear {
+                // Presenta il BarcodeScanner automaticamente
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     showingBarcodeScanner = true
                 }
@@ -158,29 +153,55 @@ struct AddBookView: View {
                     genre = foundGenre
                     description = foundDescription
                     coverImageUrl = foundCoverImage
-                    viewModel.addBook(title: title, author: author, year: year, genre: genre, description: description, coverImageUrl: coverImageUrl, coverImageData: coverImageData)
+                    viewModel.addBook(
+                        title: title,
+                        author: author,
+                        year: year,
+                        genre: genre,
+                        description: description,
+                        coverImageUrl: coverImageUrl,
+                        coverImageData: coverImageData,
+                        currentPage: 0,
+                        totalPages: totalPages
+                    )
                     dismiss()
-                }, isbnService: GoogleBookIsbnService())
+                }, isbnService: OpenLibraryIsbnService())
             }
         }
     }
     
+    // Aggiorna i campi utilizzando il servizio ISBN (default OpenLibrary)
     func searchBook(isbn: String) {
-        let isbnService = GoogleBookIsbnService()
+        let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Open Library"
+        let isbnService: IsbnService = (selectedAPI == "Google Books") ? GoogleBookIsbnService() : OpenLibraryIsbnService()
+        
         isbnService.fetchBookDetails(isbn: isbn) { result in
             switch result {
             case .success(let bookDetails):
-                title = bookDetails.title
-                author = bookDetails.author
-                year = bookDetails.year
-                genre = bookDetails.genre
-                description = bookDetails.description
-                coverImageUrl = bookDetails.coverImageUrl
-                coverImageData = bookDetails.coverImageData
-                viewModel.addBook(title: title, author: author, year: year, genre: genre, description: description, coverImageUrl: coverImageUrl, coverImageData: coverImageData)
-                dismiss()
+                DispatchQueue.main.async {
+                    title = bookDetails.title
+                    author = bookDetails.author
+                    year = bookDetails.year
+                    genre = bookDetails.genre
+                    description = bookDetails.description
+                    coverImageUrl = bookDetails.coverImageUrl
+                    coverImageData = bookDetails.coverImageData
+                    totalPages = bookDetails.totalPages
+                    viewModel.addBook(
+                        title: title,
+                        author: author,
+                        year: year,
+                        genre: genre,
+                        description: description,
+                        coverImageUrl: coverImageUrl,
+                        coverImageData: coverImageData,
+                        currentPage: 0,
+                        totalPages: totalPages
+                    )
+                    dismiss()
+                }
             case .failure:
-                showingISBNInput = true
+                DispatchQueue.main.async { showingISBNInput = true }
             }
         }
     }

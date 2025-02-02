@@ -1,10 +1,3 @@
-//
-//  SearchBarView.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 07/06/24.
-//
-
 import SwiftUI
 
 struct SearchBarView: View {
@@ -13,17 +6,13 @@ struct SearchBarView: View {
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-            
             TextField("Search books by title", text: $text)
                 .padding(.horizontal, 5)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-            
             if !text.isEmpty {
-                Button(action: {
-                    text = ""
-                }) {
+                Button(action: { text = "" }) {
                     Image(systemName: "xmark.circle.fill")
                 }
             }
@@ -35,7 +24,6 @@ struct SearchBarView: View {
 
 struct SearchBar_Previews: PreviewProvider {
     @State static var sampleText = "Mark"
-
     static var previews: some View {
         SearchBarView(text: $sampleText)
             .previewLayout(.sizeThatFits)

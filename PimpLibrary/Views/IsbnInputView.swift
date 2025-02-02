@@ -10,7 +10,7 @@ struct IsbnInputView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 20) {
                 Text("Enter ISBN to Search for a Book")
                     .font(.title2)
                     .fontWeight(.semibold)
@@ -25,9 +25,7 @@ struct IsbnInputView: View {
                         .cornerRadius(10)
                         .keyboardType(.numberPad)
                     
-                    Button(action: {
-                        showingBarcodeScanner = true
-                    }) {
+                    Button(action: { showingBarcodeScanner = true }) {
                         Image(systemName: "camera")
                             .font(.title)
                             .foregroundColor(.white)
@@ -37,14 +35,13 @@ struct IsbnInputView: View {
                     }
                 }
                 .padding(.horizontal)
-
+                
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .padding(.horizontal)
-                        .padding(.top, 10)
                 }
-
+                
                 Button(action: searchBook) {
                     Text("Search")
                         .font(.headline)
@@ -54,22 +51,19 @@ struct IsbnInputView: View {
                         .background(Color.blue)
                         .cornerRadius(10)
                         .padding(.horizontal)
-                        .padding(.top, 20)
                 }
-
+                
                 Spacer()
             }
             .padding()
             .navigationBarTitle("Search Book by ISBN", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Cancel") {
-                presentationMode.wrappedValue.dismiss()
-            })
+            .navigationBarItems(trailing: Button("Cancel") { presentationMode.wrappedValue.dismiss() })
             .sheet(isPresented: $showingBarcodeScanner) {
                 BarcodeScannerView(isbn: $isbn)
             }
         }
     }
-
+    
     func searchBook() {
         guard !isbn.isEmpty else {
             errorMessage = "Please enter a valid ISBN"
@@ -97,6 +91,6 @@ struct IsbnInputView: View {
 
 struct IsbnInputView_Previews: PreviewProvider {
     static var previews: some View {
-        IsbnInputView(onBookFound: { _, _, _, _, _, _ in }, isbnService: GoogleBookIsbnService())
+        IsbnInputView(onBookFound: { _,_,_,_,_,_ in }, isbnService: OpenLibraryIsbnService())
     }
 }

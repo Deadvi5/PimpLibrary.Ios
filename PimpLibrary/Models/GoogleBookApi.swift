@@ -1,14 +1,7 @@
-//
-//  GoogleBookApi.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 06/06/24.
-//
-
 import Foundation
 
 struct GoogleBooksResponse: Codable {
-    let items: [GoogleBookItem]
+    let items: [GoogleBookItem]?
 }
 
 struct GoogleBookItem: Codable {
@@ -21,6 +14,7 @@ struct GoogleVolumeInfo: Codable {
     let publishedDate: String?
     let description: String?
     let categories: [String]?
+    let pageCount: Int?
     let imageLinks: ImageLinks?
 }
 

@@ -1,14 +1,8 @@
-//
-//  Book.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 04/06/24.
-//
-
 import Foundation
 
 struct Book: Identifiable, Equatable {
-    var id : UUID
+    let id: UUID
+    let isbn: String
     var title: String
     var author: String
     var year: String
@@ -16,4 +10,6 @@ struct Book: Identifiable, Equatable {
     var genre: String
     var coverImageUrl: String
     var coverImageData: Data?
+    var currentPage: Int
+    var totalPages: Int
 }

@@ -1,17 +1,47 @@
-//
-//  InMemoryRepository.swift
-//  PimpLibrary
-//
-//  Created by Lorenzo Villa on 07/06/24.
-//
-
 import Foundation
 
 class InMemoryRepository: BookRepository {
     private var books: [Book] = [
-        Book(id: UUID(), title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: ""),
-        Book(id: UUID(), title: "Sample Book 2", author: "Author 2", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: ""),
-        Book(id: UUID(), title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: "")]
+        Book(
+            id: UUID(),
+            isbn: "1111111111",
+            title: "The Great Adventure",
+            author: "Jane Smith",
+            year: "2023",
+            description: "A thrilling journey through unknown lands",
+            genre: "Adventure",
+            coverImageUrl: "",
+            coverImageData: nil,
+            currentPage: 45,
+            totalPages: 320
+        ),
+        Book(
+            id: UUID(),
+            isbn: "2222222222",
+            title: "Swift Programming Guide",
+            author: "Apple Inc.",
+            year: "2024",
+            description: "Comprehensive guide to Swift programming",
+            genre: "Technology",
+            coverImageUrl: "",
+            coverImageData: nil,
+            currentPage: 120,
+            totalPages: 450
+        ),
+        Book(
+            id: UUID(),
+            isbn: "3333333333",
+            title: "Mystery of the Ancients",
+            author: "Robert Langdon",
+            year: "2022",
+            description: "Historical mystery spanning continents",
+            genre: "Mystery",
+            coverImageUrl: "",
+            coverImageData: nil,
+            currentPage: 0,
+            totalPages: 280
+        )
+    ]
     
     func fetchBooks() -> [Book] {
         return books

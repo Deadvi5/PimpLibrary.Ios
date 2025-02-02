@@ -1,6 +1,5 @@
 import SwiftUI
 import AVFoundation
-import Vision
 
 struct BarcodeScannerView: UIViewControllerRepresentable {
     @Binding var isbn: String
@@ -15,10 +14,12 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
             self.parent = parent
         }
 
-        func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-            if let metadataObject = metadataObjects.first {
-                guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
-                guard let stringValue = readableObject.stringValue else { return }
+        func metadataOutput(_ output: AVCaptureMetadataOutput,
+                            didOutput metadataObjects: [AVMetadataObject],
+                            from connection: AVCaptureConnection) {
+            if let metadataObject = metadataObjects.first,
+               let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
+               let stringValue = readableObject.stringValue {
                 AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
                 found(code: stringValue)
             }
@@ -27,7 +28,6 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         func found(code: String) {
             guard !isCodeProcessed else { return }
             isCodeProcessed = true
-
             parent.isbn = code
             parent.onISBNScanned?(code)
             parent.presentationMode.wrappedValue.dismiss()
@@ -35,12 +35,11 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        return Coordinator(parent: self)
+        Coordinator(parent: self)
     }
 
     func makeUIViewController(context: Context) -> UIViewController {
         let viewController = UIViewController()
-
         let captureSession = AVCaptureSession()
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return viewController }
         let videoInput: AVCaptureDeviceInput
@@ -51,17 +50,15 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
             return viewController
         }
 
-        if (captureSession.canAddInput(videoInput)) {
+        if captureSession.canAddInput(videoInput) {
             captureSession.addInput(videoInput)
         } else {
             return viewController
         }
 
         let metadataOutput = AVCaptureMetadataOutput()
-
-        if (captureSession.canAddOutput(metadataOutput)) {
+        if captureSession.canAddOutput(metadataOutput) {
             captureSession.addOutput(metadataOutput)
-
             metadataOutput.setMetadataObjectsDelegate(context.coordinator, queue: DispatchQueue.main)
             metadataOutput.metadataObjectTypes = [.ean13, .ean8, .upce]
         } else {
@@ -72,7 +69,6 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         previewLayer.frame = viewController.view.layer.bounds
         previewLayer.videoGravity = .resizeAspectFill
         viewController.view.layer.addSublayer(previewLayer)
-
         captureSession.startRunning()
 
         return viewController

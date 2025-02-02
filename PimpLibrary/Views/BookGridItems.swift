@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - BookGridItems View
+
 struct BookGridItems: View {
     var filteredBooks: [Book]
     var viewModel: LibraryViewModel
@@ -9,17 +11,14 @@ struct BookGridItems: View {
     
     @AppStorage("groupBy") private var groupBy: String = "None"
     
-    // Definizione delle colonne della griglia
     private let columns = [
-        GridItem(.flexible(), spacing: 20),
-        GridItem(.flexible(), spacing: 20),
-        GridItem(.flexible(), spacing: 20)
+        GridItem(.flexible(), spacing: 10),
+        GridItem(.flexible(), spacing: 10),
+        GridItem(.flexible(), spacing: 10)
     ]
     
-    // Elementi scheletro per lo stato di caricamento
     private let skeletonItems = Array(0..<6)
     
-    // Raggruppamento dei libri in base al criterio selezionato
     private var groupedBooks: [String: [Book]] {
         switch groupBy {
         case "Genre":
@@ -33,14 +32,14 @@ struct BookGridItems: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 10) {
+            LazyVStack(alignment: .leading, spacing: 5) {
                 if isLoading {
-                    LazyVGrid(columns: columns, spacing: 20) {
+                    LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(skeletonItems, id: \.self) { _ in
                             SkeletonBookItem()
                         }
                     }
-                    .padding(20)
+                    .padding(.horizontal, 20)
                 } else {
                     ForEach(groupedBooks.keys.sorted(), id: \.self) { key in
                         Section(header: sectionHeader(title: key)) {
@@ -51,7 +50,9 @@ struct BookGridItems: View {
                             }
                         }
                     }
-                    .padding(20)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 2)
+                    
                 }
             }
         }
@@ -59,28 +60,22 @@ struct BookGridItems: View {
     }
     
     private func sectionHeader(title: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title)
-                .font(.title2)
-                .bold()
-                .padding(.vertical, 5)
-                .padding(.horizontal, -16)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Divider()
-                .background(Color(UIColor.systemGray4))
-                .padding(.horizontal, -16)
-        }
+        Text(title)
+            .font(.title2)
+            .bold()
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private func bookGridItemView(book: Book) -> some View {
         NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
             VStack {
+                // Immagine copertina
                 if let imageData = book.coverImageData, let uiImage = UIImage(data: imageData) {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .frame(width: 120, height: 180)
+                        .frame(width: 100, height: 150)
                         .clipped()
-                        .cornerRadius(10)
+                        .cornerRadius(8)
                 } else if let url = URL(string: book.coverImageUrl), !book.coverImageUrl.isEmpty {
                     AsyncImage(url: url) { phase in
                         switch phase {
@@ -94,9 +89,9 @@ struct BookGridItems: View {
                             EmptyView()
                         }
                     }
-                    .frame(width: 120, height: 180)
+                    .frame(width: 100, height: 150)
                     .clipped()
-                    .cornerRadius(10)
+                    .cornerRadius(8)
                 } else {
                     ZStack {
                         Color.gray
@@ -116,11 +111,11 @@ struct BookGridItems: View {
                         }
                     }
                 }
-                
+                // Titolo
                 Text(book.title)
                     .font(.caption)
                     .lineLimit(1)
-                
+                // Progressione lettura
                 if book.totalPages > 0 {
                     ReadingProgressView(currentPage: book.currentPage, totalPages: book.totalPages)
                         .padding(.top, 2)
@@ -165,8 +160,7 @@ struct SkeletonBookItem: View {
             
             RoundedRectangle(cornerRadius: 4)
                 .fill(Color(.systemGray5))
-                .frame(height: 10)
-                .frame(width: 80)
+                .frame(width: 80, height: 10)
         }
         .redacted(reason: .placeholder)
     }
@@ -175,7 +169,7 @@ struct SkeletonBookItem: View {
 struct BookGridItems_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            BookGridItems(
+            /*BookGridItems(
                 filteredBooks: [],
                 viewModel: LibraryViewModel(bookRepository: InMemoryRepository()),
                 refreshBooks: {},
@@ -183,7 +177,7 @@ struct BookGridItems_Previews: PreviewProvider {
                 isLoading: true
             )
             .previewDisplayName("Loading State")
-            
+            */
             BookGridItems(
                 filteredBooks: [
                     Book(id: UUID(), isbn: "1234567890", title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: "", coverImageData: nil, currentPage: 150, totalPages: 300),

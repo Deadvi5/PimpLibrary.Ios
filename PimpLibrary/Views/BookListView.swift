@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - BookListView
+
 struct BookListView: View {
     @ObservedObject var viewModel: LibraryViewModel
     @State private var showingAlert = false
@@ -12,54 +14,58 @@ struct BookListView: View {
     @State private var isLoading = false
     @State private var textOffset: CGFloat = -UIScreen.main.bounds.width
     @State private var textOpacity: Double = 0.0
-    // Use AppStorage to track grid view setting (default: false)
     @AppStorage("useGridView") private var useGridView: Bool = false
-    
-    // Inizializzazione con view model di default
+
     init(viewModel: LibraryViewModel = LibraryViewModel(bookRepository: RealmBookRepository())) {
         self.viewModel = viewModel
     }
-    
-    // Libri ordinati e filtrati
-    var sortedBooks: [Book] {
+
+    private var sortedBooks: [Book] {
         sortBooks(books: viewModel.books, by: sortCriteria, ascending: isAscending)
     }
-    
-    var filteredBooks: [Book] {
-        filterBooks(books: sortedBooks, by: searchText)
+
+    private var filteredBooks: [Book] {
+        if searchText.isEmpty { return sortedBooks }
+        return sortedBooks.filter { $0.title.lowercased().contains(searchText.lowercased()) }
     }
-    
+
     var body: some View {
         VStack(spacing: 0) {
             headerView
-                .background(Color(.systemBackground).shadow(radius: 2))
+
             if isSearchBarVisible {
                 SearchBarView(text: $searchText)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
+
             if isSortingVisible {
                 sortingOptionsView
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
+
             if isLoading {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
                     .scaleEffect(1.5)
                     .padding()
             }
-            // Mostra la lista o la griglia a seconda della preferenza (using the local @AppStorage property)
+
             Group {
                 if useGridView {
-                    BookGridItems(filteredBooks: filteredBooks,
-                                  viewModel: viewModel,
-                                  refreshBooks: refreshBooks,
-                                  confirmDelete: confirmDelete(at:),
-                                  isLoading: isLoading)
+                    BookGridItems(
+                        filteredBooks: filteredBooks,
+                        viewModel: viewModel,
+                        refreshBooks: refreshBooks,
+                        confirmDelete: confirmDelete(at:),
+                        isLoading: isLoading
+                    )
                 } else {
-                    BookListItems(filteredBooks: filteredBooks,
-                                  viewModel: viewModel,
-                                  refreshBooks: refreshBooks,
-                                  confirmDelete: confirmDelete(at:))
+                    BookListItems(
+                        filteredBooks: filteredBooks,
+                        viewModel: viewModel,
+                        refreshBooks: refreshBooks,
+                        confirmDelete: confirmDelete(at:)
+                    )
                 }
             }
             .background(Color(.systemGroupedBackground))
@@ -81,40 +87,39 @@ struct BookListView: View {
             animateTextEntrance()
         }
     }
+
+    // MARK: - Header View
     
-    // Header con titolo e bottoni per refresh, ordinamento, ricerca e aggiunta
     private var headerView: some View {
         HStack {
             Text("PimpLibrary")
                 .font(.system(size: 32, weight: .bold))
-                .offset(x: textOffset)
-                .opacity(textOpacity)
+                .modifier(AnimatedEntrance(offset: $textOffset, opacity: $textOpacity))
+                .padding(.leading)
             Spacer()
-            Button(action: { updateBooks() }) {
-                Image(systemName: "arrow.clockwise")
-                    .imageScale(.large)
-                    .padding(8)
-            }
-            Button(action: { withAnimation { isSortingVisible.toggle() } }) {
-                Image(systemName: "arrow.up.arrow.down")
-                    .imageScale(.large)
-                    .padding(8)
-            }
-            Button(action: { withAnimation { isSearchBarVisible.toggle() } }) {
-                Image(systemName: "magnifyingglass")
-                    .imageScale(.large)
-                    .padding(8)
-            }
+            headerButton(systemName: "arrow.clockwise") { updateBooks() }
+            headerButton(systemName: "arrow.up.arrow.down") { withAnimation { isSortingVisible.toggle() } }
+            headerButton(systemName: "magnifyingglass") { withAnimation { isSearchBarVisible.toggle() } }
             NavigationLink(destination: AddBookView(viewModel: viewModel)) {
-                Image(systemName: "plus")
-                    .imageScale(.large)
-                    .padding(8)
+                headerButtonContent(systemName: "plus")
             }
         }
-        .padding([.leading, .trailing, .top])
+    }
+
+    private func headerButton(systemName: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            headerButtonContent(systemName: systemName)
+        }
+    }
+
+    private func headerButtonContent(systemName: String) -> some View {
+        Image(systemName: systemName)
+            .imageScale(.large)
+            .padding(8)
     }
     
-    // Vista per le opzioni di ordinamento
+    // MARK: - Sorting Options View
+    
     private var sortingOptionsView: some View {
         HStack {
             Picker("Sort by", selection: $sortCriteria) {
@@ -132,7 +137,8 @@ struct BookListView: View {
         }
     }
     
-    // Ordinamento dei libri
+    // MARK: - Sorting and Filtering
+    
     private func sortBooks(books: [Book], by criteria: String, ascending: Bool) -> [Book] {
         switch criteria {
         case "Title":
@@ -160,15 +166,9 @@ struct BookListView: View {
             return books
         }
     }
-
     
-    // Filtraggio in base al testo di ricerca
-    private func filterBooks(books: [Book], by searchText: String) -> [Book] {
-        if searchText.isEmpty { return books }
-        return books.filter { $0.title.lowercased().contains(searchText.lowercased()) }
-    }
+    // MARK: - Refresh and Delete Functions
     
-    // Refresh dei libri dal repository
     private func refreshBooks() {
         isLoading = true
         DispatchQueue.global().async {
@@ -180,7 +180,6 @@ struct BookListView: View {
         }
     }
     
-    // Conferma cancellazione
     private func confirmDelete(at offsets: IndexSet) {
         for index in offsets {
             let book = filteredBooks[index]
@@ -191,32 +190,31 @@ struct BookListView: View {
         }
     }
     
-    // Animazione di entrata del titolo
+    // MARK: - Animations
+    
     private func animateTextEntrance() {
-        withAnimation(Animation.easeInOut(duration: 1.0)) {
+        withAnimation(.easeInOut(duration: 1.0)) {
             textOffset = 0
             textOpacity = 1.0
         }
     }
     
-    // Aggiornamento dei libri tramite il servizio API (default OpenLibrary)
+    // MARK: - Update Books Function
+    
     private func updateBooks() {
         guard !viewModel.books.isEmpty else { return }
         isLoading = true
         let group = DispatchGroup()
-        // Seleziona il servizio API in base al valore nelle Settings
         let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Open Library"
         let isbnService: IsbnService = (selectedAPI == "Google Books") ? GoogleBookIsbnService() : OpenLibraryIsbnService()
         
         for (index, book) in viewModel.books.enumerated() {
-            // Se il libro ha un ISBN (non vuoto)
             guard !book.isbn.isEmpty else { continue }
             group.enter()
             isbnService.fetchBookDetails(isbn: book.isbn) { result in
                 switch result {
                 case .success(let updatedBook):
                     DispatchQueue.main.async {
-                        // Preserva il progresso di lettura
                         let mergedBook = Book(
                             id: book.id,
                             isbn: book.isbn,
@@ -233,7 +231,7 @@ struct BookListView: View {
                         viewModel.books[index] = mergedBook
                     }
                 case .failure(let error):
-                    print("Errore aggiornando il libro: \(error.localizedDescription)")
+                    print("Error updating book: \(error.localizedDescription)")
                 }
                 group.leave()
             }
@@ -244,8 +242,25 @@ struct BookListView: View {
     }
 }
 
+// MARK: - AnimatedEntrance Modifier
+
+struct AnimatedEntrance: ViewModifier {
+    @Binding var offset: CGFloat
+    @Binding var opacity: Double
+    
+    func body(content: Content) -> some View {
+        content
+            .offset(x: offset)
+            .opacity(opacity)
+    }
+}
+
+// MARK: - Previews for BookListView
+
 struct BookListView_Previews: PreviewProvider {
     static var previews: some View {
-        BookListView(viewModel: LibraryViewModel(bookRepository: InMemoryRepository()))
+        NavigationView {
+            BookListView(viewModel: LibraryViewModel(bookRepository: InMemoryRepository()))
+        }
     }
 }

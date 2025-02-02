@@ -8,7 +8,6 @@ struct BookListItems: View {
     
     @AppStorage("groupBy") private var groupBy: String = "None"
     
-    // Raggruppa i libri in base al criterio selezionato
     private var groupedBooks: [String: [Book]] {
         switch groupBy {
         case "Genre":
@@ -41,11 +40,11 @@ struct BookListItems: View {
         NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
             BookListItem(book: book)
                 .contextMenu {
-                    Button(action: {
+                    Button {
                         if let index = filteredBooks.firstIndex(where: { $0.id == book.id }) {
                             confirmDelete(IndexSet(integer: index))
                         }
-                    }) {
+                    } label: {
                         Label("Delete", systemImage: "trash")
                     }
                 }
@@ -60,6 +59,8 @@ struct BookListItems: View {
         }
     }
 }
+
+// MARK: - BookListItem View
 
 struct BookListItem: View {
     var book: Book
@@ -121,18 +122,22 @@ struct BookListItem: View {
     }
 }
 
+// MARK: - Previews for BookListItems
+
 struct BookListItems_Previews: PreviewProvider {
     static var previews: some View {
-        BookListItems(
-            filteredBooks: [
-                Book(id: UUID(), isbn: "1111111111", title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: "", coverImageData: nil, currentPage: 150, totalPages: 300),
-                Book(id: UUID(), isbn: "2222222222", title: "Sample Book 2", author: "Author 2", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: "", coverImageData: nil, currentPage: 120, totalPages: 450),
-                Book(id: UUID(), isbn: "3333333333", title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: "", coverImageData: nil, currentPage: 0, totalPages: 280)
-            ],
-            viewModel: LibraryViewModel(bookRepository: InMemoryRepository()),
-            refreshBooks: {},
-            confirmDelete: { _ in }
-        )
+        NavigationView {
+            BookListItems(
+                filteredBooks: [
+                    Book(id: UUID(), isbn: "1111111111", title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: "", coverImageData: nil, currentPage: 150, totalPages: 300),
+                    Book(id: UUID(), isbn: "2222222222", title: "Sample Book 2", author: "Author 2", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: "", coverImageData: nil, currentPage: 120, totalPages: 450),
+                    Book(id: UUID(), isbn: "3333333333", title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: "", coverImageData: nil, currentPage: 0, totalPages: 280)
+                ],
+                viewModel: LibraryViewModel(bookRepository: InMemoryRepository()),
+                refreshBooks: {},
+                confirmDelete: { _ in }
+            )
+        }
         .previewLayout(.sizeThatFits)
     }
 }

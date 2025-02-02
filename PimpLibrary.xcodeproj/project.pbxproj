@@ -10,6 +10,7 @@
 		6ECB670A2D4E586900C1B585 /* OpenLibraryIsbnService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECB67092D4E586900C1B585 /* OpenLibraryIsbnService.swift */; };
 		6ECB670C2D4E5D5300C1B585 /* ReadingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECB670B2D4E5D5300C1B585 /* ReadingProgressView.swift */; };
 		6ECB670E2D4E686600C1B585 /* View+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECB670D2D4E686600C1B585 /* View+Keyboard.swift */; };
+		6ECB67572D4FEB3E00C1B585 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6ECB67562D4FEB3E00C1B585 /* Localizable.xcstrings */; };
 		AB0592BE2C12FA2000502CFE /* BookRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0592BD2C12FA2000502CFE /* BookRepository.swift */; };
 		AB0592C02C12FA8800502CFE /* RealmBookRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0592BF2C12FA8800502CFE /* RealmBookRepository.swift */; };
 		AB0592C22C12FD2F00502CFE /* InMemoryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0592C12C12FD2F00502CFE /* InMemoryRepository.swift */; };
@@ -81,6 +82,7 @@
 		6ECB67092D4E586900C1B585 /* OpenLibraryIsbnService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenLibraryIsbnService.swift; sourceTree = "<group>"; };
 		6ECB670B2D4E5D5300C1B585 /* ReadingProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingProgressView.swift; sourceTree = "<group>"; };
 		6ECB670D2D4E686600C1B585 /* View+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Keyboard.swift"; sourceTree = "<group>"; };
+		6ECB67562D4FEB3E00C1B585 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		AB0592BD2C12FA2000502CFE /* BookRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookRepository.swift; sourceTree = "<group>"; };
 		AB0592BF2C12FA8800502CFE /* RealmBookRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmBookRepository.swift; sourceTree = "<group>"; };
 		AB0592C12C12FD2F00502CFE /* InMemoryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryRepository.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		AB6F50FB2C0F4BFE003E8231 = {
 			isa = PBXGroup;
 			children = (
+				6ECB67562D4FEB3E00C1B585 /* Localizable.xcstrings */,
 				AB6F51062C0F4BFE003E8231 /* PimpLibrary */,
 				AB6F51192C0F4C01003E8231 /* PimpLibraryTests */,
 				AB6F51232C0F4C01003E8231 /* PimpLibraryUITests */,
@@ -407,6 +410,7 @@
 			files = (
 				AB6F51112C0F4C00003E8231 /* Preview Assets.xcassets in Resources */,
 				AB6F510E2C0F4C00003E8231 /* Assets.xcassets in Resources */,
+				6ECB67572D4FEB3E00C1B585 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

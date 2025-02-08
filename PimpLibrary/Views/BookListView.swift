@@ -68,6 +68,7 @@ struct BookListView: View {
             }
             .background(Color(.systemGroupedBackground))
         }
+        .edgesIgnoringSafeArea(.top)
         .navigationBarHidden(true)
         .alert(isPresented: $showingAlert) {
             Alert(
@@ -86,25 +87,27 @@ struct BookListView: View {
         }
     }
 
-    // MARK: - Header View
-
     private var headerView: some View {
-        HStack {
-            Text("PimpLibrary")
-                .font(.system(size: 26, weight: .bold))
-                .modifier(AnimatedEntrance(offset: $textOffset, opacity: $textOpacity))
-                .padding(.leading)
-            Spacer()
-            headerButton(systemName: "arrow.clockwise") { updateBooks() }
-            headerButton(systemName: "arrow.up.arrow.down") { withAnimation { isSortingVisible.toggle() } }
-            headerButton(systemName: "magnifyingglass") { withAnimation { isSearchBarVisible.toggle() } }
-            NavigationLink(destination: AddBookView(viewModel: viewModel)) {
-                headerButtonContent(systemName: "plus")
-            }
+        VStack(spacing: 0) {
+            LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                .frame(height: 120)
+                .overlay(
+                    HStack(spacing: 16) {
+                        Text("PimpLibrary")
+                            .font(.system(size: 22, weight: .bold))
+                            .modifier(AnimatedEntrance(offset: $textOffset, opacity: $textOpacity))
+                            .foregroundColor(.white)
+                        Spacer()
+                        headerButton(systemName: "arrow.up.arrow.down") { withAnimation { isSortingVisible.toggle() } }
+                        headerButton(systemName: "magnifyingglass") { withAnimation { isSearchBarVisible.toggle() } }
+                        NavigationLink(destination: AddBookView(viewModel: viewModel)) {
+                            headerButtonContent(systemName: "plus")
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 20)
+                )
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .shadow(radius: 5)
     }
 
     private func headerButton(systemName: String, action: @escaping () -> Void) -> some View {
@@ -115,13 +118,12 @@ struct BookListView: View {
 
     private func headerButtonContent(systemName: String) -> some View {
         Image(systemName: systemName)
-            .imageScale(.large)
+            .imageScale(.medium)
             .padding(8)
-            .background(Color(.systemGray5))
-            .cornerRadius(8)
+            .background(Color.white.opacity(0.2))
+            .clipShape(Circle())
+            .foregroundColor(.white)
     }
-
-    // MARK: - Sorting Options View
 
     private var sortingOptionsView: some View {
         HStack {
@@ -139,12 +141,11 @@ struct BookListView: View {
             .padding(.horizontal)
         }
         .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
+        .cornerRadius(15)
         .shadow(radius: 5)
+        .padding(.horizontal)
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
-
-    // MARK: - Sorting and Filtering
 
     private func sortBooks(books: [Book], by criteria: String, ascending: Bool) -> [Book] {
         switch criteria {
@@ -158,23 +159,14 @@ struct BookListView: View {
                 ascending ? $0.author.lowercased() < $1.author.lowercased()
                           : $0.author.lowercased() > $1.author.lowercased()
             }
-        case "Genre":
-            return books.sorted {
-                ascending ? $0.genre.lowercased() < $1.genre.lowercased()
-                          : $0.genre.lowercased() > $1.genre.lowercased()
-            }
         case "Year":
             return books.sorted {
                 ascending ? $0.year < $1.year : $0.year > $1.year
             }
-        case "Last Added":
-            return ascending ? books : books.reversed()
         default:
             return books
         }
     }
-
-    // MARK: - Refresh and Delete Functions
 
     private func refreshBooks() {
         isLoading = true
@@ -197,16 +189,12 @@ struct BookListView: View {
         }
     }
 
-    // MARK: - Animations
-
     private func animateTextEntrance() {
         withAnimation(.easeInOut(duration: 1.0)) {
             textOffset = 0
             textOpacity = 1.0
         }
     }
-
-    // MARK: - Update Books Function
 
     private func updateBooks() {
         guard !viewModel.books.isEmpty else { return }
@@ -249,8 +237,6 @@ struct BookListView: View {
     }
 }
 
-// MARK: - AnimatedEntrance Modifier
-
 struct AnimatedEntrance: ViewModifier {
     @Binding var offset: CGFloat
     @Binding var opacity: Double
@@ -261,8 +247,6 @@ struct AnimatedEntrance: ViewModifier {
             .opacity(opacity)
     }
 }
-
-// MARK: - Previews for BookListView
 
 struct BookListView_Previews: PreviewProvider {
     static var previews: some View {

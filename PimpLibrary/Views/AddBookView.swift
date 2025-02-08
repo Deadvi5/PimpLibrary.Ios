@@ -10,13 +10,13 @@ struct AddBookView: View {
     @State private var coverImageUrl: String = ""
     @State private var coverImageData: Data?
     @State private var totalPages: Int = 0
-    
+
     @State private var showingISBNInput = false
     @State private var showingBarcodeScanner = false
     @State private var showCamera = false
     @State private var capturedImage: UIImage?
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -29,12 +29,12 @@ struct AddBookView: View {
                     Spacer()
                 }
                 .padding([.top, .horizontal])
-                
+
                 Text("Add Book")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.horizontal)
-                
+
                 // Cover Image
                 VStack {
                     if let imageData = coverImageData, let uiImage = UIImage(data: imageData) {
@@ -81,7 +81,7 @@ struct AddBookView: View {
                         coverImageData = cropped.jpegData(compressionQuality: 0.8)
                     }
                 }
-                
+
                 // Book Details Form
                 Group {
                     DetailFieldView(label: "Title", text: $title)
@@ -91,7 +91,7 @@ struct AddBookView: View {
                     DetailFieldView(label: "Description", text: $description, isMultiline: true)
                 }
                 .padding(.horizontal)
-                
+
                 // Buttons
                 HStack(spacing: 16) {
                     Button(action: { showingBarcodeScanner = true }) {
@@ -103,7 +103,7 @@ struct AddBookView: View {
                             .background(Color.green)
                             .cornerRadius(10)
                     }
-                    
+
                     Button(action: {
                         viewModel.addBook(
                             title: title,
@@ -128,7 +128,7 @@ struct AddBookView: View {
                     }
                 }
                 .padding(.horizontal)
-                
+
                 Spacer()
             }
             .padding(.vertical)
@@ -169,12 +169,12 @@ struct AddBookView: View {
             }
         }
     }
-    
+
     // Aggiorna i campi utilizzando il servizio ISBN (default OpenLibrary)
     func searchBook(isbn: String) {
         let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Open Library"
         let isbnService: IsbnService = (selectedAPI == "Google Books") ? GoogleBookIsbnService() : OpenLibraryIsbnService()
-        
+
         isbnService.fetchBookDetails(isbn: isbn) { result in
             switch result {
             case .success(let bookDetails):

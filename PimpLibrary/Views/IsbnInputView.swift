@@ -16,7 +16,7 @@ struct IsbnInputView: View {
                     .fontWeight(.semibold)
                     .multilineTextAlignment(.center)
                     .padding(.top, 40)
-                
+
                 HStack(spacing: 10) {
                     TextField("ISBN", text: $isbn)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -24,7 +24,7 @@ struct IsbnInputView: View {
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                         .keyboardType(.numberPad)
-                    
+
                     Button(action: { showingBarcodeScanner = true }) {
                         Image(systemName: "camera")
                             .font(.title)
@@ -35,13 +35,13 @@ struct IsbnInputView: View {
                     }
                 }
                 .padding(.horizontal)
-                
+
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .padding(.horizontal)
                 }
-                
+
                 Button(action: searchBook) {
                     Text("Search")
                         .font(.headline)
@@ -52,7 +52,7 @@ struct IsbnInputView: View {
                         .cornerRadius(10)
                         .padding(.horizontal)
                 }
-                
+
                 Spacer()
             }
             .padding()
@@ -63,7 +63,7 @@ struct IsbnInputView: View {
             }
         }
     }
-    
+
     func searchBook() {
         guard !isbn.isEmpty else {
             errorMessage = "Please enter a valid ISBN"

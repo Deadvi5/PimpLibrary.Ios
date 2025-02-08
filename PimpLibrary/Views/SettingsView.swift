@@ -11,7 +11,7 @@ struct SettingsView: View {
     @AppStorage("selectedAPI") private var selectedAPI: String = "Open Library"
     // New setting for estimated pages per day; default is 20
     @AppStorage("pagesPerDay") private var pagesPerDay: Int = 20
-    
+
     var body: some View {
         Form {
             Section(header: Text("API Selection").font(.headline)) {
@@ -21,7 +21,7 @@ struct SettingsView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
             }
-            
+
             Section(header: Text("Reading Settings").font(.headline)) {
                 HStack {
                     Text("Pages per Day")
@@ -33,7 +33,7 @@ struct SettingsView: View {
                         .addDoneButton() // Add toolbar with Done button to dismiss keyboard
                 }
             }
-            
+
             Section(header: Text("Delete Data").font(.headline)) {
                 Button(action: {
                     showingAlert = true
@@ -52,7 +52,7 @@ struct SettingsView: View {
                     )
                 }
             }
-            
+
             Section(header: Text("Import and Export Data").font(.headline)) {
                 Button(action: {
                     viewModel.exportBooks()
@@ -73,7 +73,7 @@ struct SettingsView: View {
                         print("Export failed: \(error.localizedDescription)")
                     }
                 }
-                
+
                 Button(action: {
                     showingImportPicker = true
                 }) {
@@ -103,7 +103,7 @@ struct SettingsView: View {
                     )
                 }
             }
-            
+
             Section(header: Text("View Options").font(.headline)) {
                 Toggle(isOn: $viewModel.useGridView) {
                     Text("Use Grid View")
@@ -111,7 +111,7 @@ struct SettingsView: View {
                 .onChange(of: viewModel.useGridView) { _, _ in
                     viewModel.toggleUseGridView()
                 }
-                
+
                 VStack(alignment: .leading) {
                     Text("Group Books By")
                     Picker("Group Books By", selection: $groupBy) {

@@ -74,9 +74,9 @@ struct BookDetailView: View {
             }
         }
     }
-    
+
     // MARK: - Subviews
-    
+
     private var navBar: some View {
         HStack {
             Button(action: { dismiss() }) {
@@ -87,7 +87,7 @@ struct BookDetailView: View {
         }
         .padding([.top, .horizontal])
     }
-    
+
     private var coverImageSection: some View {
         VStack {
             coverImageView
@@ -95,7 +95,7 @@ struct BookDetailView: View {
         .padding(.horizontal)
         .onTapGesture { showingActionSheet = true }
     }
-    
+
     private var coverImageView: some View {
         Group {
             if let imageData = book.coverImageData, let uiImage = UIImage(data: imageData) {
@@ -139,7 +139,7 @@ struct BookDetailView: View {
             }
         }
     }
-    
+
     private var readingProgressSection: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Reading Progress")
@@ -175,7 +175,7 @@ struct BookDetailView: View {
         .cornerRadius(12)
         .padding(.horizontal)
     }
-    
+
     private var updateProgressSection: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Update Progress")
@@ -219,7 +219,7 @@ struct BookDetailView: View {
         .cornerRadius(12)
         .padding(.horizontal)
     }
-    
+
     private var detailFieldsSection: some View {
         Group {
             DetailFieldView(label: "Title", text: $book.title)
@@ -230,7 +230,7 @@ struct BookDetailView: View {
         }
         .padding(.horizontal)
     }
-    
+
     private var saveButton: some View {
         Button(action: {
             viewModel.editBook(
@@ -257,14 +257,14 @@ struct BookDetailView: View {
                 .shadow(radius: 5)
         }
     }
-    
+
     // MARK: - Helpers
-    
+
     private var progressValue: Double {
         guard book.totalPages > 0 else { return 0 }
         return Double(book.currentPage) / Double(book.totalPages)
     }
-    
+
     private var estimatedCompletionDate: String {
         guard book.currentPage > 0 && book.totalPages > 0 else { return "Not started" }
         let pagesLeft = book.totalPages - book.currentPage
@@ -274,7 +274,7 @@ struct BookDetailView: View {
         let date = Calendar.current.date(byAdding: .day, value: daysLeft, to: Date()) ?? Date()
         return "Est. completion: \(date.formatted(date: .abbreviated, time: .omitted))"
     }
-    
+
     private func updateBookCoverImage(_ newImage: UIImage) {
         book.coverImageData = newImage.jpegData(compressionQuality: 0.8)
         // Optionally force a refresh:

@@ -1,7 +1,5 @@
 import SwiftUI
 
-// MARK: - BookListView
-
 struct BookListView: View {
     @ObservedObject var viewModel: LibraryViewModel
     @State private var showingAlert = false
@@ -89,11 +87,11 @@ struct BookListView: View {
     }
 
     // MARK: - Header View
-    
+
     private var headerView: some View {
         HStack {
             Text("PimpLibrary")
-                .font(.system(size: 32, weight: .bold))
+                .font(.system(size: 26, weight: .bold))
                 .modifier(AnimatedEntrance(offset: $textOffset, opacity: $textOpacity))
                 .padding(.leading)
             Spacer()
@@ -104,6 +102,9 @@ struct BookListView: View {
                 headerButtonContent(systemName: "plus")
             }
         }
+        .padding()
+        .background(Color(.systemGray6))
+        .shadow(radius: 5)
     }
 
     private func headerButton(systemName: String, action: @escaping () -> Void) -> some View {
@@ -116,10 +117,12 @@ struct BookListView: View {
         Image(systemName: systemName)
             .imageScale(.large)
             .padding(8)
+            .background(Color(.systemGray5))
+            .cornerRadius(8)
     }
-    
+
     // MARK: - Sorting Options View
-    
+
     private var sortingOptionsView: some View {
         HStack {
             Picker("Sort by", selection: $sortCriteria) {
@@ -129,16 +132,20 @@ struct BookListView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
-            
+
             Toggle(isOn: $isAscending) {
                 Text(isAscending ? "Ascending" : "Descending")
             }
             .padding(.horizontal)
         }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(10)
+        .shadow(radius: 5)
     }
-    
+
     // MARK: - Sorting and Filtering
-    
+
     private func sortBooks(books: [Book], by criteria: String, ascending: Bool) -> [Book] {
         switch criteria {
         case "Title":
@@ -166,9 +173,9 @@ struct BookListView: View {
             return books
         }
     }
-    
+
     // MARK: - Refresh and Delete Functions
-    
+
     private func refreshBooks() {
         isLoading = true
         DispatchQueue.global().async {
@@ -179,7 +186,7 @@ struct BookListView: View {
             }
         }
     }
-    
+
     private func confirmDelete(at offsets: IndexSet) {
         for index in offsets {
             let book = filteredBooks[index]
@@ -189,25 +196,25 @@ struct BookListView: View {
             }
         }
     }
-    
+
     // MARK: - Animations
-    
+
     private func animateTextEntrance() {
         withAnimation(.easeInOut(duration: 1.0)) {
             textOffset = 0
             textOpacity = 1.0
         }
     }
-    
+
     // MARK: - Update Books Function
-    
+
     private func updateBooks() {
         guard !viewModel.books.isEmpty else { return }
         isLoading = true
         let group = DispatchGroup()
         let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Open Library"
         let isbnService: IsbnService = (selectedAPI == "Google Books") ? GoogleBookIsbnService() : OpenLibraryIsbnService()
-        
+
         for (index, book) in viewModel.books.enumerated() {
             guard !book.isbn.isEmpty else { continue }
             group.enter()
@@ -247,7 +254,7 @@ struct BookListView: View {
 struct AnimatedEntrance: ViewModifier {
     @Binding var offset: CGFloat
     @Binding var opacity: Double
-    
+
     func body(content: Content) -> some View {
         content
             .offset(x: offset)

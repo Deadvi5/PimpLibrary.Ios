@@ -1,24 +1,22 @@
 import SwiftUI
 
-// MARK: - BookGridItems View
-
 struct BookGridItems: View {
     var filteredBooks: [Book]
     var viewModel: LibraryViewModel
     var refreshBooks: () -> Void
     var confirmDelete: (IndexSet) -> Void
     var isLoading: Bool
-    
+
     @AppStorage("groupBy") private var groupBy: String = "None"
-    
+
     private let columns = [
         GridItem(.flexible(), spacing: 10),
         GridItem(.flexible(), spacing: 10),
         GridItem(.flexible(), spacing: 10)
     ]
-    
+
     private let skeletonItems = Array(0..<6)
-    
+
     private var groupedBooks: [String: [Book]] {
         switch groupBy {
         case "Genre":
@@ -29,7 +27,7 @@ struct BookGridItems: View {
             return ["All Books": filteredBooks]
         }
     }
-    
+
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 5) {
@@ -52,20 +50,20 @@ struct BookGridItems: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 2)
-                    
+
                 }
             }
         }
         .refreshable { refreshBooks() }
     }
-    
+
     private func sectionHeader(title: String) -> some View {
         Text(title)
             .font(.title2)
             .bold()
             .frame(maxWidth: .infinity, alignment: .leading)
     }
-    
+
     private func bookGridItemView(book: Book) -> some View {
         NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
             VStack {
@@ -136,7 +134,7 @@ struct BookGridItems: View {
 
 struct SkeletonBookItem: View {
     @State private var shimmerPosition: CGFloat = -1
-    
+
     var body: some View {
         VStack(spacing: 8) {
             RoundedRectangle(cornerRadius: 10)
@@ -153,11 +151,11 @@ struct SkeletonBookItem: View {
                     .animation(Animation.linear(duration: 1.5).repeatForever(autoreverses: false), value: shimmerPosition)
                 )
                 .onAppear { shimmerPosition = 1.5 }
-            
+
             RoundedRectangle(cornerRadius: 4)
                 .fill(Color(.systemGray5))
                 .frame(height: 12)
-            
+
             RoundedRectangle(cornerRadius: 4)
                 .fill(Color(.systemGray5))
                 .frame(width: 80, height: 10)
@@ -169,15 +167,6 @@ struct SkeletonBookItem: View {
 struct BookGridItems_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            /*BookGridItems(
-                filteredBooks: [],
-                viewModel: LibraryViewModel(bookRepository: InMemoryRepository()),
-                refreshBooks: {},
-                confirmDelete: { _ in },
-                isLoading: true
-            )
-            .previewDisplayName("Loading State")
-            */
             BookGridItems(
                 filteredBooks: [
                     Book(id: UUID(), isbn: "1234567890", title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: "", coverImageData: nil, currentPage: 150, totalPages: 300),

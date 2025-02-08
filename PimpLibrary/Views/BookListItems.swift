@@ -5,9 +5,9 @@ struct BookListItems: View {
     var viewModel: LibraryViewModel
     var refreshBooks: () -> Void
     var confirmDelete: (IndexSet) -> Void
-    
+
     @AppStorage("groupBy") private var groupBy: String = "None"
-    
+
     private var groupedBooks: [String: [Book]] {
         switch groupBy {
         case "Genre":
@@ -18,7 +18,7 @@ struct BookListItems: View {
             return ["All Books": filteredBooks]
         }
     }
-    
+
     var body: some View {
         List {
             ForEach(groupedBooks.keys.sorted(), id: \.self) { key in
@@ -35,7 +35,7 @@ struct BookListItems: View {
         .onAppear { refreshBooks() }
         .refreshable { refreshBooks() }
     }
-    
+
     private func navigationLinkForBook(book: Book) -> some View {
         NavigationLink(destination: BookDetailView(viewModel: viewModel, book: book)) {
             BookListItem(book: book)
@@ -50,7 +50,7 @@ struct BookListItems: View {
                 }
         }
     }
-    
+
     private func handleDelete(at indexSet: IndexSet, for key: String) {
         guard let index = indexSet.first else { return }
         let book = groupedBooks[key]![index]
@@ -60,11 +60,9 @@ struct BookListItems: View {
     }
 }
 
-// MARK: - BookListItem View
-
 struct BookListItem: View {
     var book: Book
-    
+
     var body: some View {
         HStack {
             bookImageView
@@ -72,7 +70,7 @@ struct BookListItem: View {
         }
         .padding(.vertical, 5)
     }
-    
+
     private var bookImageView: some View {
         Group {
             if let imageData = book.coverImageData, let uiImage = UIImage(data: imageData) {
@@ -99,7 +97,7 @@ struct BookListItem: View {
             }
         }
     }
-    
+
     private var bookInfoView: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(book.title)
@@ -121,8 +119,6 @@ struct BookListItem: View {
         .padding(.leading, 8)
     }
 }
-
-// MARK: - Previews for BookListItems
 
 struct BookListItems_Previews: PreviewProvider {
     static var previews: some View {

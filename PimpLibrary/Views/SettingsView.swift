@@ -28,7 +28,10 @@ struct SettingsView: View {
                 
                 settingsCard(title: "View Options") {
                     Toggle("Use Grid View", isOn: $viewModel.useGridView)
-                        .onChange(of: viewModel.useGridView) { _ in viewModel.toggleUseGridView() }
+                        .onChange(of: viewModel.useGridView) {
+                            viewModel.toggleUseGridView()
+                        }
+
 
                     VStack(alignment: .leading) {
                         Text("Group Books By")

@@ -105,7 +105,10 @@ struct BookListView: View {
                         }
                     }
                     .padding(.horizontal)
-                    .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top ?? 20)
+                    .padding(.top, UIApplication.shared.connectedScenes
+                        .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+                        .first?.safeAreaInsets.top ?? 20)
+
                 )
         }
     }

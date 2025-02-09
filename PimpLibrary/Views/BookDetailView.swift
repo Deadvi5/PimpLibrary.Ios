@@ -61,14 +61,15 @@ struct BookDetailView: View {
         }
         .sheet(isPresented: $showCamera) { CameraCaptureView(image: $capturedImage) }
         .sheet(isPresented: $showImagePicker) { ImagePicker(image: $selectedImage) }
-        .onChange(of: capturedImage) { newImage in
-            if let newImage = newImage,
+        .onChange(of: capturedImage) {
+            if let newImage = capturedImage,
                let cropped = ImageUtilities.cropBookCover(from: newImage) {
                 updateBookCoverImage(cropped)
             }
         }
-        .onChange(of: selectedImage) { newImage in
-            if let newImage = newImage,
+
+        .onChange(of: selectedImage) {
+            if let newImage = selectedImage,
                let cropped = ImageUtilities.cropBookCover(from: newImage) {
                 updateBookCoverImage(cropped)
             }

@@ -6,7 +6,6 @@ struct BookListView: View {
     @State private var bookToDelete: Book?
     @State private var searchText = ""
     @State private var isSearchBarVisible = false
-    @State private var isSortingVisible = false
     @State private var sortCriteria = "Title"
     @State private var isAscending = true
     @State private var isLoading = false
@@ -34,11 +33,7 @@ struct BookListView: View {
             if isSearchBarVisible {
                 SearchBarView(text: $searchText)
                     .transition(.move(edge: .top).combined(with: .opacity))
-            }
-
-            if isSortingVisible {
-                sortingOptionsView
-                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .frame(maxWidth: .infinity)
             }
 
             if isLoading {
@@ -98,7 +93,9 @@ struct BookListView: View {
                             .modifier(AnimatedEntrance(offset: $textOffset, opacity: $textOpacity))
                             .foregroundColor(.white)
                         Spacer()
-                        headerButton(systemName: "arrow.up.arrow.down") { withAnimation { isSortingVisible.toggle() } }
+                        NavigationLink(destination: SortingOptionsView(sortCriteria: $sortCriteria, isAscending: $isAscending)) {
+                            headerButtonContent(systemName: "arrow.up.arrow.down")
+                        }
                         headerButton(systemName: "magnifyingglass") { withAnimation { isSearchBarVisible.toggle() } }
                         NavigationLink(destination: AddBookView(viewModel: viewModel)) {
                             headerButtonContent(systemName: "plus")
@@ -108,7 +105,6 @@ struct BookListView: View {
                     .padding(.top, UIApplication.shared.connectedScenes
                         .compactMap { ($0 as? UIWindowScene)?.keyWindow }
                         .first?.safeAreaInsets.top ?? 20)
-
                 )
         }
     }
@@ -126,28 +122,6 @@ struct BookListView: View {
             .background(Color.white.opacity(0.2))
             .clipShape(Circle())
             .foregroundColor(.white)
-    }
-
-    private var sortingOptionsView: some View {
-        HStack {
-            Picker("Sort by", selection: $sortCriteria) {
-                Text("Title").tag("Title")
-                Text("Author").tag("Author")
-                Text("Year").tag("Year")
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(.horizontal)
-
-            Toggle(isOn: $isAscending) {
-                Text(isAscending ? "Ascending" : "Descending")
-            }
-            .padding(.horizontal)
-        }
-        .padding()
-        .cornerRadius(15)
-        .shadow(radius: 5)
-        .padding(.horizontal)
-        .transition(.move(edge: .top).combined(with: .opacity))
     }
 
     private func sortBooks(books: [Book], by criteria: String, ascending: Bool) -> [Book] {

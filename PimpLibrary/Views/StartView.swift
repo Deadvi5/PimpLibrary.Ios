@@ -3,6 +3,7 @@ import SwiftUI
 struct StartView: View {
     @ObservedObject var viewModel: LibraryViewModel
     @State private var selectedTab: Tab = .library
+    @State private var customization = TabViewCustomization()
 
     init(viewModel: LibraryViewModel = LibraryViewModel(bookRepository: RealmBookRepository())) {
         self.viewModel = viewModel

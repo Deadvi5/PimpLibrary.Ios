@@ -31,12 +31,12 @@ struct StartView: View {
                     }
                     Spacer()
                 }
-                .padding(.vertical, 8)
+                .padding(.vertical, 15)
                 .background(
                     LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
                 )
                 .frame(maxWidth: .infinity)
-                .frame(height: 25)
+                .frame(height: 10)
                 .ignoresSafeArea(edges: .bottom)
                 .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: -5)
             }

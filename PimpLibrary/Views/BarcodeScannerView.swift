@@ -101,7 +101,6 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         previewLayer.videoGravity = .resizeAspectFill
         viewController.view.layer.addSublayer(previewLayer)
 
-        // Optional: Add an overlay to guide barcode positioning
         let overlayView = UIView(frame: CGRect(x: 50, y: 200, width: viewController.view.bounds.width - 100, height: 200))
         overlayView.layer.borderColor = UIColor.white.cgColor
         overlayView.layer.borderWidth = 2
@@ -109,7 +108,6 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         overlayView.backgroundColor = UIColor.clear
         viewController.view.addSubview(overlayView)
 
-        // Start session on a background thread
         DispatchQueue.global(qos: .userInitiated).async {
             captureSession.startRunning()
         }

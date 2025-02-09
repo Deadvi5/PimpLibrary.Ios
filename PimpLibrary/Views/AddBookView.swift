@@ -11,11 +11,13 @@ struct AddBookView: View {
     @State private var coverImageData: Data?
     @State private var totalPages: Int = 0
 
-    @State private var showingISBNInput = false
+    @State private var showingSearchOptions = false
     @State private var showingBarcodeScanner = false
+    @State private var showingISBNSearch = false
+    @State private var showingTitleSearch = false
     @State private var showCamera = false
     @State private var capturedImage: UIImage?
-    
+
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -95,8 +97,8 @@ struct AddBookView: View {
 
                 // Buttons
                 HStack(spacing: 16) {
-                    Button(action: { showingBarcodeScanner = true }) {
-                        Text("Scan ISBN")
+                    Button(action: { showingSearchOptions = true }) {
+                        Text("Search Book")
                             .font(.headline)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
@@ -136,79 +138,62 @@ struct AddBookView: View {
             .background(Color(UIColor.systemGroupedBackground))
             .navigationBarHidden(true)
             .onAppear {
-                // Presenta il BarcodeScanner automaticamente
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     showingBarcodeScanner = true
                 }
             }
             .sheet(isPresented: $showingBarcodeScanner) {
                 BarcodeScannerView(isbn: .constant(""), onISBNScanned: { isbn in
-                    searchBook(isbn: isbn)
+                    searchBook(by: .isbn, query: isbn)
                 })
             }
-            .sheet(isPresented: $showingISBNInput) {
-                let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Google Books"
-                let isbnService: IsbnService = (selectedAPI == "Google Books") ? GoogleBookIsbnService() : OpenLibraryIsbnService()
-                
-                IsbnInputView(onBookFound: { foundTitle, foundAuthor, foundYear, foundGenre, foundDescription, foundCoverImage, foundTotalPages in
-                    title = foundTitle
-                    author = foundAuthor
-                    year = foundYear
-                    genre = foundGenre
-                    description = foundDescription
-                    coverImageUrl = foundCoverImage
-                    totalPages = foundTotalPages
-                    
-                    viewModel.addBook(
-                        title: title,
-                        author: author,
-                        year: year,
-                        genre: genre,
-                        description: description,
-                        coverImageUrl: coverImageUrl,
-                        coverImageData: coverImageData,
-                        currentPage: 0,
-                        totalPages: totalPages
-                    )
-                    dismiss()
-                }, isbnService: isbnService)
+            .actionSheet(isPresented: $showingSearchOptions) {
+                ActionSheet(title: Text("Search Book"), message: Text("Choose a method to search for the book."), buttons: [
+                    .default(Text("Search by ISBN")) { showingISBNSearch = true },
+                    .default(Text("Search by Title")) { showingTitleSearch = true },
+                    .cancel()
+                ])
+            }
+            .sheet(isPresented: $showingISBNSearch) {
+                BookSearchView(searchType: .isbn) { result in
+                    handleSearchResult(result)
+                }
+            }
+            .sheet(isPresented: $showingTitleSearch) {
+                BookSearchView(searchType: .title) { result in
+                    handleSearchResult(result)
+                }
             }
         }
     }
 
-    // Aggiorna i campi utilizzando il servizio ISBN (default OpenLibrary)
-    func searchBook(isbn: String) {
+    func searchBook(by type: BookSearchType, query: String) {
         let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Google Books"
         let isbnService: IsbnService = (selectedAPI == "Google Books") ? GoogleBookIsbnService() : OpenLibraryIsbnService()
-        
-        isbnService.fetchBookDetails(isbn: isbn) { result in
-            switch result {
-            case .success(let bookDetails):
-                DispatchQueue.main.async {
-                    title = bookDetails.title
-                    author = bookDetails.author
-                    year = bookDetails.year
-                    genre = bookDetails.genre
-                    description = bookDetails.description
-                    coverImageUrl = bookDetails.coverImageUrl
-                    coverImageData = bookDetails.coverImageData
-                    totalPages = bookDetails.totalPages
-                    viewModel.addBook(
-                        title: title,
-                        author: author,
-                        year: year,
-                        genre: genre,
-                        description: description,
-                        coverImageUrl: coverImageUrl,
-                        coverImageData: coverImageData,
-                        currentPage: 0,
-                        totalPages: totalPages
-                    )
-                    dismiss()
-                }
-            case .failure:
-                DispatchQueue.main.async { showingISBNInput = true }
+
+        switch type {
+        case .isbn:
+            isbnService.fetchBookDetails(isbn: query, completion: handleSearchResult)
+        case .title:
+            isbnService.fetchBookDetails(title: query, completion: handleSearchResult)
+        }
+    }
+
+    func handleSearchResult(_ result: Result<Book, Error>) {
+        switch result {
+        case .success(let bookDetails):
+            DispatchQueue.main.async {
+                title = bookDetails.title
+                author = bookDetails.author
+                year = bookDetails.year
+                genre = bookDetails.genre
+                description = bookDetails.description
+                coverImageUrl = bookDetails.coverImageUrl
+                coverImageData = bookDetails.coverImageData
+                totalPages = bookDetails.totalPages
             }
+        case .failure(let error):
+            print("Error fetching book: \(error.localizedDescription)")
         }
     }
 }
@@ -217,4 +202,9 @@ struct AddBookView_Previews: PreviewProvider {
     static var previews: some View {
         AddBookView(viewModel: LibraryViewModel(bookRepository: InMemoryRepository()))
     }
+}
+
+enum BookSearchType {
+    case isbn
+    case title
 }

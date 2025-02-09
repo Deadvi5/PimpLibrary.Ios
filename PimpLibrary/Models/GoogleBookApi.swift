@@ -16,6 +16,12 @@ struct GoogleVolumeInfo: Codable {
     let categories: [String]?
     let pageCount: Int?
     let imageLinks: ImageLinks?
+    let industryIdentifiers: [IndustryIdentifier]?
+}
+
+struct IndustryIdentifier: Codable {
+    let type: String
+    let identifier: String
 }
 
 struct ImageLinks: Codable {

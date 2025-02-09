@@ -68,4 +68,59 @@ class GoogleBookIsbnService: IsbnService {
             }
         }.resume()
     }
+    
+    func fetchBookDetails(title: String, completion: @escaping (Result<Book, Error>) -> Void) {
+            let encodedTitle = title.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? title
+            let urlString = "https://www.googleapis.com/books/v1/volumes?q=intitle:\(encodedTitle)"
+            guard let url = URL(string: urlString) else {
+                completion(.failure(NSError(domain: "GoogleBookIsbnService", code: 0,
+                                            userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+                return
+            }
+            
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    DispatchQueue.main.async { completion(.failure(error)) }
+                    return
+                }
+                
+                guard let data = data else {
+                    DispatchQueue.main.async {
+                        completion(.failure(NSError(domain: "GoogleBookIsbnService", code: 0,
+                                                    userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+                    }
+                    return
+                }
+                
+                do {
+                    let bookResponse = try JSONDecoder().decode(GoogleBooksResponse.self, from: data)
+                    guard let firstItem = bookResponse.items?.first else {
+                        DispatchQueue.main.async {
+                            completion(.failure(NSError(domain: "GoogleBookIsbnService", code: 404,
+                                                        userInfo: [NSLocalizedDescriptionKey: "No book found for this title"])))
+                        }
+                        return
+                    }
+                    
+                    let volumeInfo = firstItem.volumeInfo
+                    let bookDetails = Book(
+                        id: UUID(),
+                        isbn: volumeInfo.industryIdentifiers?.first?.identifier ?? "Unknown ISBN",
+                        title: volumeInfo.title,
+                        author: volumeInfo.authors?.joined(separator: ", ") ?? "Unknown Author",
+                        year: String(volumeInfo.publishedDate?.prefix(4) ?? "Unknown Year"),
+                        description: volumeInfo.description ?? "No description available",
+                        genre: volumeInfo.categories?.first ?? "Unknown Genre",
+                        coverImageUrl: volumeInfo.imageLinks?.thumbnail?.replacingOccurrences(of: "http://", with: "https://") ?? "",
+                        coverImageData: nil,
+                        currentPage: 0,
+                        totalPages: volumeInfo.pageCount ?? 0
+                    )
+                    
+                    DispatchQueue.main.async { completion(.success(bookDetails)) }
+                } catch {
+                    DispatchQueue.main.async { completion(.failure(error)) }
+                }
+            }.resume()
+        }
 }

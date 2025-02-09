@@ -172,46 +172,6 @@ struct BookListView: View {
             textOpacity = 1.0
         }
     }
-
-    private func updateBooks() {
-        guard !viewModel.books.isEmpty else { return }
-        isLoading = true
-        let group = DispatchGroup()
-        let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Open Library"
-        let isbnService: IsbnService = (selectedAPI == "Google Books") ? GoogleBookIsbnService() : OpenLibraryIsbnService()
-
-        for (index, book) in viewModel.books.enumerated() {
-            guard !book.isbn.isEmpty else { continue }
-            group.enter()
-            isbnService.fetchBookDetails(isbn: book.isbn) { result in
-                switch result {
-                case .success(let updatedBook):
-                    DispatchQueue.main.async {
-                        let mergedBook = Book(
-                            id: book.id,
-                            isbn: book.isbn,
-                            title: updatedBook.title,
-                            author: updatedBook.author,
-                            year: updatedBook.year,
-                            description: updatedBook.description,
-                            genre: updatedBook.genre,
-                            coverImageUrl: updatedBook.coverImageUrl,
-                            coverImageData: updatedBook.coverImageData,
-                            currentPage: book.currentPage,
-                            totalPages: updatedBook.totalPages
-                        )
-                        viewModel.books[index] = mergedBook
-                    }
-                case .failure(let error):
-                    print("Error updating book: \(error.localizedDescription)")
-                }
-                group.leave()
-            }
-        }
-        group.notify(queue: .main) {
-            isLoading = false
-        }
-    }
 }
 
 struct AnimatedEntrance: ViewModifier {

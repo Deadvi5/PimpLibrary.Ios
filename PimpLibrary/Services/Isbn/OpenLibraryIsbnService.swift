@@ -94,4 +94,58 @@ class OpenLibraryIsbnService: IsbnService {
             }
         }.resume()
     }
+    
+    func fetchBookDetails(title: String, completion: @escaping (Result<Book, Error>) -> Void) {
+            let encodedTitle = title.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? title
+            let urlString = "https://openlibrary.org/search.json?title=\(encodedTitle)"
+            guard let url = URL(string: urlString) else {
+                completion(.failure(NSError(domain: "OpenLibraryIsbnService", code: 0,
+                                            userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+                return
+            }
+            
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    DispatchQueue.main.async { completion(.failure(error)) }
+                    return
+                }
+                
+                guard let data = data else {
+                    DispatchQueue.main.async {
+                        completion(.failure(NSError(domain: "OpenLibraryIsbnService", code: 0,
+                                                    userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+                    }
+                    return
+                }
+                
+                do {
+                    let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    guard let docs = jsonResponse?["docs"] as? [[String: Any]], let firstDoc = docs.first else {
+                        DispatchQueue.main.async {
+                            completion(.failure(NSError(domain: "OpenLibraryIsbnService", code: 404,
+                                                        userInfo: [NSLocalizedDescriptionKey: "No book found for this title"])))
+                        }
+                        return
+                    }
+                    
+                    let bookDetails = Book(
+                        id: UUID(),
+                        isbn: (firstDoc["isbn"] as? [String])?.first ?? "Unknown ISBN",
+                        title: firstDoc["title"] as? String ?? "No Title",
+                        author: (firstDoc["author_name"] as? [String])?.joined(separator: ", ") ?? "Unknown Author",
+                        year: String((firstDoc["first_publish_year"] as? Int) ?? 0),
+                        description: firstDoc["subtitle"] as? String ?? "No description available",
+                        genre: (firstDoc["subject"] as? [String])?.first ?? "Unknown Genre",
+                        coverImageUrl: firstDoc["cover_i"].flatMap { "https://covers.openlibrary.org/b/id/\($0)-M.jpg" } ?? "",
+                        coverImageData: nil,
+                        currentPage: 0,
+                        totalPages: firstDoc["number_of_pages_median"] as? Int ?? 0
+                    )
+                    
+                    DispatchQueue.main.async { completion(.success(bookDetails)) }
+                } catch {
+                    DispatchQueue.main.async { completion(.failure(error)) }
+                }
+            }.resume()
+        }
 }

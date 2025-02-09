@@ -15,6 +15,7 @@ struct AddBookView: View {
     @State private var showingBarcodeScanner = false
     @State private var showCamera = false
     @State private var capturedImage: UIImage?
+    
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -146,13 +147,18 @@ struct AddBookView: View {
                 })
             }
             .sheet(isPresented: $showingISBNInput) {
-                IsbnInputView(onBookFound: { foundTitle, foundAuthor, foundYear, foundGenre, foundDescription, foundCoverImage in
+                let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Google Books"
+                let isbnService: IsbnService = (selectedAPI == "Google Books") ? GoogleBookIsbnService() : OpenLibraryIsbnService()
+                
+                IsbnInputView(onBookFound: { foundTitle, foundAuthor, foundYear, foundGenre, foundDescription, foundCoverImage, foundTotalPages in
                     title = foundTitle
                     author = foundAuthor
                     year = foundYear
                     genre = foundGenre
                     description = foundDescription
                     coverImageUrl = foundCoverImage
+                    totalPages = foundTotalPages
+                    
                     viewModel.addBook(
                         title: title,
                         author: author,
@@ -165,16 +171,16 @@ struct AddBookView: View {
                         totalPages: totalPages
                     )
                     dismiss()
-                }, isbnService: OpenLibraryIsbnService())
+                }, isbnService: isbnService)
             }
         }
     }
 
     // Aggiorna i campi utilizzando il servizio ISBN (default OpenLibrary)
     func searchBook(isbn: String) {
-        let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Open Library"
+        let selectedAPI = UserDefaults.standard.string(forKey: "selectedAPI") ?? "Google Books"
         let isbnService: IsbnService = (selectedAPI == "Google Books") ? GoogleBookIsbnService() : OpenLibraryIsbnService()
-
+        
         isbnService.fetchBookDetails(isbn: isbn) { result in
             switch result {
             case .success(let bookDetails):

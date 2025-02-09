@@ -50,7 +50,6 @@ struct BookGridItems: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 2)
-
                 }
             }
         }
@@ -93,8 +92,8 @@ struct BookGridItems: View {
                 } else {
                     ZStack {
                         Color.gray
-                            .frame(width: 120, height: 180)
-                            .cornerRadius(10)
+                            .frame(width: 100, height: 150)
+                            .cornerRadius(8)
                         VStack {
                             Text(book.title)
                                 .font(.headline)
@@ -114,10 +113,8 @@ struct BookGridItems: View {
                     .font(.caption)
                     .lineLimit(1)
                 // Progressione lettura
-                if book.totalPages > 0 {
-                    ReadingProgressView(currentPage: book.currentPage, totalPages: book.totalPages)
-                        .padding(.top, 2)
-                }
+                ReadingProgressView(currentPage: book.currentPage, totalPages: max(book.totalPages, 1))
+                    .padding(.top, 2)
             }
             .contextMenu {
                 Button(role: .destructive) {
@@ -139,7 +136,7 @@ struct SkeletonBookItem: View {
         VStack(spacing: 8) {
             RoundedRectangle(cornerRadius: 10)
                 .fill(Color(.systemGray5))
-                .frame(width: 120, height: 180)
+                .frame(width: 100, height: 150)
                 .overlay(
                     LinearGradient(
                         gradient: Gradient(colors: [.clear, Color.white.opacity(0.4), .clear]),
@@ -171,7 +168,7 @@ struct BookGridItems_Previews: PreviewProvider {
                 filteredBooks: [
                     Book(id: UUID(), isbn: "1234567890", title: "Sample Book 1", author: "Author 1", year: "2021", description: "Description 1", genre: "Genre 1", coverImageUrl: "", coverImageData: nil, currentPage: 150, totalPages: 300),
                     Book(id: UUID(), isbn: "0987654321", title: "Sample Book 2", author: "Author 2", year: "2022", description: "Description 2", genre: "Genre 2", coverImageUrl: "", coverImageData: nil, currentPage: 120, totalPages: 450),
-                    Book(id: UUID(), isbn: "1122334455", title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: "", coverImageData: nil, currentPage: 0, totalPages: 280)
+                    Book(id: UUID(), isbn: "1122334455", title: "Sample Book 3", author: "Author 3", year: "2023", description: "Description 3", genre: "Genre 3", coverImageUrl: "", coverImageData: nil, currentPage: 0, totalPages: 0)
                 ],
                 viewModel: LibraryViewModel(bookRepository: InMemoryRepository()),
                 refreshBooks: {},

@@ -8,7 +8,7 @@ struct SettingsView: View {
     @State private var showingImportPicker = false
     @State private var showingSuccessMessage = false
     @AppStorage("groupBy") private var groupBy: String = "None"
-    @AppStorage("selectedAPI") private var selectedAPI: String = "Open Library"
+    @AppStorage("selectedAPI") private var selectedAPI: String = "Google Books"
     @AppStorage("pagesPerDay") private var pagesPerDay: Int = 20
 
     var body: some View {
